@@ -20,7 +20,7 @@ export default {
 		},
 		extend: {
 			fontFamily: {
-				inter: ['Inter', 'sans-serif'],
+				system: ['-apple-system', 'BlinkMacSystemFont', 'Segoe UI', 'Roboto', 'Helvetica', 'Arial', 'sans-serif'],
 			},
 			colors: {
 				border: 'hsl(var(--border))',
@@ -66,42 +66,41 @@ export default {
 					border: 'hsl(var(--sidebar-border))',
 					ring: 'hsl(var(--sidebar-ring))'
 				},
-				// KitLog brand colors
-				orange: {
-					DEFAULT: '#F58427',
-					50: '#FEF7F0',
-					100: '#FDEDDD',
-					200: '#FBD8BB',
-					300: '#F8C299',
-					400: '#F6AD77',
-					500: '#F58427',
-					600: '#E56B0A',
-					700: '#B8540A',
-					800: '#8A3E07',
-					900: '#5C2905'
+				// Apple-inspired colors
+				blue: {
+					DEFAULT: '#007AFF',
+					50: '#E5F2FF',
+					100: '#CCE5FF',
+					200: '#99CCFF',
+					300: '#66B2FF',
+					400: '#3399FF',
+					500: '#007AFF',
+					600: '#0056CC',
+					700: '#003D99',
+					800: '#002366',
+					900: '#001133'
 				},
-				teal: {
-					DEFAULT: '#199492',
-					50: '#F0FFFE',
-					100: '#CCFFFE',
-					200: '#99FEFD',
-					300: '#66FDFC',
-					400: '#33FCFB',
-					500: '#199492',
-					600: '#147B79',
-					700: '#0F6260',
-					800: '#0A4947',
-					900: '#05312E'
-				},
-				kitlog: {
-					text: '#333333',
-					bg: '#FAF9F7'
+				gray: {
+					50: '#F9F9F9',
+					100: '#F2F2F2',
+					200: '#E5E5E5',
+					300: '#D4D4D4',
+					400: '#A3A3A3',
+					500: '#737373',
+					600: '#525252',
+					700: '#404040',
+					800: '#262626',
+					900: '#171717'
 				}
 			},
 			borderRadius: {
 				lg: 'var(--radius)',
 				md: 'calc(var(--radius) - 2px)',
 				sm: 'calc(var(--radius) - 4px)'
+			},
+			boxShadow: {
+				'apple': '0 4px 16px rgba(0, 0, 0, 0.08)',
+				'apple-lg': '0 8px 32px rgba(0, 0, 0, 0.12)',
 			},
 			keyframes: {
 				'accordion-down': {
