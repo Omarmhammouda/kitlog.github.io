@@ -15,7 +15,7 @@ const PricingSection = () => {
     },
     {
       name: "Pro",
-      price: "$15-$25/mo",
+      price: "$15/month",
       description: "Ideal for freelancers and small teams",
       features: [
         "Unlimited gear",
@@ -28,7 +28,7 @@ const PricingSection = () => {
     },
     {
       name: "Team",
-      price: "$49-$99/mo",
+      price: "$49/month",
       description: "For growing creative teams",
       features: [
         "10+ users",
