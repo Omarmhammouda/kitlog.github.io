@@ -91,41 +91,44 @@ const HeroSection = () => {
             and track maintenance. No more messy spreadsheets.
           </p>
           
-          {/* Signup Counter */}
-          <div className="mb-12 animate-scale-in">
-            <div className="text-5xl md:text-6xl font-bold text-orange mb-2 animate-pulse">
-              {animatedCount.toLocaleString()}
+          {/* Counter and Signup Form Side by Side */}
+          <div className="flex flex-col lg:flex-row items-center justify-center gap-12 mb-16 animate-fade-in">
+            {/* Signup Counter */}
+            <div className="text-center animate-scale-in">
+              <div className="text-5xl md:text-6xl font-bold text-orange mb-2 animate-pulse">
+                {animatedCount.toLocaleString()}
+              </div>
+              <p className="text-lg text-gray-600">creatives have joined the waitlist</p>
             </div>
-            <p className="text-lg text-gray-600">creatives have joined the waitlist</p>
-          </div>
-          
-          {/* Signup Form */}
-          <div className="max-w-md mx-auto mb-16 animate-fade-in">
-            <form onSubmit={handleSubmit} className="space-y-4">
-              <input
-                type="text"
-                value={name}
-                onChange={(e) => setName(e.target.value)}
-                placeholder="Your name"
-                className="w-full px-6 py-4 rounded-xl text-lg border-2 border-gray-200 focus:border-orange focus:ring-4 focus:ring-orange/20 outline-none transition-all"
-                required
-              />
-              <input
-                type="email"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                placeholder="Your email address"
-                className="w-full px-6 py-4 rounded-xl text-lg border-2 border-gray-200 focus:border-orange focus:ring-4 focus:ring-orange/20 outline-none transition-all"
-                required
-              />
-              <button
-                type="submit"
-                className="w-full bg-orange text-white px-8 py-4 rounded-xl font-semibold text-lg hover:bg-orange-600 transition-all duration-200 transform hover:scale-105 shadow-lg hover:shadow-xl flex items-center justify-center group"
-              >
-                Join Beta Waitlist
-                <ArrowRight className="ml-2 w-5 h-5 transition-transform group-hover:translate-x-1" />
-              </button>
-            </form>
+            
+            {/* Signup Form */}
+            <div className="max-w-md w-full">
+              <form onSubmit={handleSubmit} className="space-y-4">
+                <input
+                  type="text"
+                  value={name}
+                  onChange={(e) => setName(e.target.value)}
+                  placeholder="Your name"
+                  className="w-full px-6 py-4 rounded-xl text-lg border-2 border-gray-200 focus:border-orange focus:ring-4 focus:ring-orange/20 outline-none transition-all"
+                  required
+                />
+                <input
+                  type="email"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  placeholder="Your email address"
+                  className="w-full px-6 py-4 rounded-xl text-lg border-2 border-gray-200 focus:border-orange focus:ring-4 focus:ring-orange/20 outline-none transition-all"
+                  required
+                />
+                <button
+                  type="submit"
+                  className="w-full bg-orange text-white px-8 py-4 rounded-xl font-semibold text-lg hover:bg-orange-600 transition-all duration-200 transform hover:scale-105 shadow-lg hover:shadow-xl flex items-center justify-center group"
+                >
+                  Join Beta Waitlist
+                  <ArrowRight className="ml-2 w-5 h-5 transition-transform group-hover:translate-x-1" />
+                </button>
+              </form>
+            </div>
           </div>
           
           {/* Mockup Preview */}
