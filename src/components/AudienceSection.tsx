@@ -83,24 +83,6 @@ const AudienceSection = () => {
           ))}
         </div>
         
-        <div className="text-center mt-16">
-          <div className="inline-flex items-center space-x-8 text-gray-500">
-            <div className="text-center">
-              <div className="text-3xl font-bold text-orange">500+</div>
-              <div className="text-sm">Beta Users</div>
-            </div>
-            <div className="w-px h-12 bg-gray-300"></div>
-            <div className="text-center">
-              <div className="text-3xl font-bold text-teal">$2M+</div>
-              <div className="text-sm">Gear Tracked</div>
-            </div>
-            <div className="w-px h-12 bg-gray-300"></div>
-            <div className="text-center">
-              <div className="text-3xl font-bold text-orange">50+</div>
-              <div className="text-sm">Studios</div>
-            </div>
-          </div>
-        </div>
       </div>
     </section>
   );
