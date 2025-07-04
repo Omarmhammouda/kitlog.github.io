@@ -1,4 +1,3 @@
-
 import type { Config } from "tailwindcss";
 
 export default {
@@ -66,19 +65,18 @@ export default {
 					border: 'hsl(var(--sidebar-border))',
 					ring: 'hsl(var(--sidebar-ring))'
 				},
-				// Apple-inspired colors
-				blue: {
-					DEFAULT: '#007AFF',
-					50: '#E5F2FF',
-					100: '#CCE5FF',
-					200: '#99CCFF',
-					300: '#66B2FF',
-					400: '#3399FF',
-					500: '#007AFF',
-					600: '#0056CC',
-					700: '#003D99',
-					800: '#002366',
-					900: '#001133'
+				orange: {
+					DEFAULT: '#f58427',
+					50: '#fef7ed',
+					100: '#fdebd5',
+					200: '#fbd3aa',
+					300: '#f8b374',
+					400: '#f5923c',
+					500: '#f58427',
+					600: '#e65a0c',
+					700: '#bf420c',
+					800: '#993512',
+					900: '#7c2d12'
 				},
 				gray: {
 					50: '#F9F9F9',

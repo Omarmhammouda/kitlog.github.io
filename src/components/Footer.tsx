@@ -1,4 +1,3 @@
-
 import { Camera, Twitter, Instagram, Linkedin, Mail } from 'lucide-react';
 
 const Footer = () => {
@@ -10,7 +9,11 @@ const Footer = () => {
           <div className="col-span-1 md:col-span-2">
             <div className="flex items-center space-x-2 mb-6">
               <div className="flex items-center justify-center w-10 h-10 bg-orange rounded-xl">
-                <Camera className="w-6 h-6 text-white" />
+                <img 
+                  src="/lovable-uploads/5ebddfc5-e861-454b-8965-cdf99cd02fb3.png" 
+                  alt="KitLog Logo" 
+                  className="w-6 h-6 brightness-0 invert"
+                />
               </div>
               <span className="text-2xl font-bold">KitLog</span>
             </div>

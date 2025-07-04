@@ -1,4 +1,3 @@
-
 import { ArrowRight } from 'lucide-react';
 import { useState, useEffect } from 'react';
 import { useToast } from '@/hooks/use-toast';
@@ -65,7 +64,7 @@ const HeroSection = () => {
                 and updates as we get closer to launch.
               </p>
               <div className="text-center">
-                <div className="text-5xl md:text-6xl font-light text-blue mb-2">
+                <div className="text-5xl md:text-6xl font-light text-orange mb-2">
                   {animatedCount.toLocaleString()}
                 </div>
                 <p className="text-lg text-gray-500">creatives have joined the waitlist</p>
@@ -83,7 +82,7 @@ const HeroSection = () => {
         <div className="text-center mb-16">
           <h1 className="text-5xl md:text-7xl font-light text-gray-900 mb-8 animate-fade-in text-balance leading-tight">
             Never Lose Track of Your{' '}
-            <span className="text-blue font-normal">Gear</span> Again
+            <span className="text-orange font-normal">Gear</span> Again
           </h1>
           
           <p className="text-xl md:text-2xl text-gray-600 mb-16 animate-fade-in text-balance max-w-4xl mx-auto font-normal">
@@ -96,7 +95,7 @@ const HeroSection = () => {
         <div className="flex flex-col lg:flex-row items-center justify-center gap-16 mb-20 animate-fade-in">
           {/* Signup Counter */}
           <div className="text-center">
-            <div className="text-6xl md:text-7xl font-light text-blue mb-3">
+            <div className="text-6xl md:text-7xl font-light text-orange mb-3">
               {animatedCount.toLocaleString()}
             </div>
             <p className="text-lg text-gray-500">creatives have joined the waitlist</p>
@@ -110,7 +109,7 @@ const HeroSection = () => {
                 value={name}
                 onChange={(e) => setName(e.target.value)}
                 placeholder="Your name"
-                className="w-full px-5 py-4 rounded-2xl text-lg border border-gray-200 focus:border-blue focus:ring-4 focus:ring-blue/10 outline-none transition-all bg-white shadow-apple"
+                className="w-full px-5 py-4 rounded-2xl text-lg border border-gray-200 focus:border-orange focus:ring-4 focus:ring-orange/10 outline-none transition-all bg-white shadow-apple"
                 required
               />
               <input
@@ -118,12 +117,12 @@ const HeroSection = () => {
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 placeholder="Your email address"
-                className="w-full px-5 py-4 rounded-2xl text-lg border border-gray-200 focus:border-blue focus:ring-4 focus:ring-blue/10 outline-none transition-all bg-white shadow-apple"
+                className="w-full px-5 py-4 rounded-2xl text-lg border border-gray-200 focus:border-orange focus:ring-4 focus:ring-orange/10 outline-none transition-all bg-white shadow-apple"
                 required
               />
               <button
                 type="submit"
-                className="w-full bg-blue text-white px-6 py-4 rounded-2xl font-medium text-lg hover:bg-blue-600 transition-all duration-200 shadow-apple hover:shadow-apple-lg flex items-center justify-center group"
+                className="w-full bg-orange text-white px-6 py-4 rounded-2xl font-medium text-lg hover:bg-orange-600 transition-all duration-200 shadow-apple hover:shadow-apple-lg flex items-center justify-center group"
               >
                 Join Beta Waitlist
                 <ArrowRight className="ml-2 w-5 h-5 transition-transform group-hover:translate-x-1" />
@@ -135,9 +134,9 @@ const HeroSection = () => {
         {/* Mockup Preview */}
         <div className="relative max-w-5xl mx-auto animate-fade-in">
           <div className="bg-white rounded-3xl shadow-apple-lg border border-gray-100 p-12">
-            <div className="bg-gradient-to-br from-blue-50 to-gray-50 rounded-2xl p-12 h-80 flex items-center justify-center">
+            <div className="bg-gradient-to-br from-orange-50 to-gray-50 rounded-2xl p-12 h-80 flex items-center justify-center">
               <div className="text-center">
-                <div className="w-20 h-20 bg-blue rounded-2xl mx-auto mb-6 flex items-center justify-center">
+                <div className="w-20 h-20 bg-orange rounded-2xl mx-auto mb-6 flex items-center justify-center">
                   <div className="w-10 h-10 bg-white rounded-xl"></div>
                 </div>
                 <p className="text-gray-500 font-medium text-lg">App Preview Coming Soon</p>

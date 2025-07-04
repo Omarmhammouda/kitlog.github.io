@@ -1,4 +1,3 @@
-
 import { Check } from 'lucide-react';
 
 const PricingSection = () => {
@@ -72,13 +71,13 @@ const PricingSection = () => {
               key={index}
               className={`relative bg-white rounded-3xl p-8 shadow-apple border transition-all duration-300 hover:shadow-apple-lg ${
                 plan.popular 
-                  ? 'border-blue ring-1 ring-blue/20 scale-105' 
+                  ? 'border-orange ring-1 ring-orange/20 scale-105' 
                   : 'border-gray-100 hover:border-gray-200'
               }`}
             >
               {plan.popular && (
                 <div className="absolute -top-3 left-1/2 transform -translate-x-1/2">
-                  <span className="bg-blue text-white px-4 py-1 rounded-full text-sm font-medium">
+                  <span className="bg-orange text-white px-4 py-1 rounded-full text-sm font-medium">
                     Most Popular
                   </span>
                 </div>
@@ -86,28 +85,18 @@ const PricingSection = () => {
               
               <div className="text-center mb-8">
                 <h3 className="text-xl font-semibold text-gray-900 mb-2">{plan.name}</h3>
-                <div className="text-3xl font-light text-blue mb-2">{plan.price}</div>
+                <div className="text-3xl font-light text-orange mb-2">{plan.price}</div>
                 <p className="text-gray-500 text-sm">{plan.description}</p>
               </div>
 
-              <ul className="space-y-3 mb-8">
+              <ul className="space-y-3">
                 {plan.features.map((feature, featureIndex) => (
                   <li key={featureIndex} className="flex items-center">
-                    <Check className="w-4 h-4 text-blue mr-3 flex-shrink-0" />
+                    <Check className="w-4 h-4 text-orange mr-3 flex-shrink-0" />
                     <span className="text-gray-700 text-sm">{feature}</span>
                   </li>
                 ))}
               </ul>
-
-              <button
-                className={`w-full py-3 px-6 rounded-2xl font-medium transition-all duration-200 ${
-                  plan.popular
-                    ? 'bg-blue text-white hover:bg-blue-600 shadow-apple'
-                    : 'bg-gray-50 text-gray-900 hover:bg-gray-100'
-                }`}
-              >
-                {plan.name === 'Enterprise' ? 'Contact Sales' : 'Get Started'}
-              </button>
             </div>
           ))}
         </div>
