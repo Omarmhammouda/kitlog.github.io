@@ -8,15 +8,27 @@ const CTASection = () => {
   const [isSubmitted, setIsSubmitted] = useState(false);
   const { toast } = useToast();
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (email) {
-      setIsSubmitted(true);
-      toast({
-        title: "Welcome to KitLog!",
-        description: "You're on the beta waitlist. We'll be in touch soon!",
-      });
-      console.log('Beta signup:', email);
+      try {
+        const res = await fetch('http://localhost:4000/api/collect-email', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ email }),
+        });
+        if (res.ok) {
+          setIsSubmitted(true);
+          toast({
+            title: "Welcome to KitLog!",
+            description: "You're on the beta waitlist. We'll be in touch soon!",
+          });
+        } else {
+          toast({ title: "Error", description: "Failed to join waitlist." });
+        }
+      } catch (err) {
+        toast({ title: "Error", description: "Network error." });
+      }
     }
   };
 
@@ -53,7 +65,7 @@ const CTASection = () => {
   }
 
   return (
-    <section className="py-20 px-4 sm:px-6 lg:px-8">
+    <section id="cta" className="py-20 px-4 sm:px-6 lg:px-8">
       <div className="max-w-4xl mx-auto">
         <div className="bg-gradient-to-br from-orange-500 to-orange-600 rounded-3xl p-8 md:p-12 text-white text-center relative overflow-hidden">
           {/* Background decoration */}

@@ -1,3 +1,4 @@
+import { Link } from 'react-router-dom';
 
 const Header = () => {
   return (
@@ -5,26 +6,26 @@ const Header = () => {
       <div className="max-w-7xl mx-auto px-6 lg:px-8">
         <div className="flex justify-between items-center h-16">
           <div className="flex items-center space-x-3">
-            <div className="flex items-center justify-center w-8 h-8">
+            <Link to="/" className="flex items-center justify-center w-8 h-8">
               <img 
-                src="/lovable-uploads/5ebddfc5-e861-454b-8965-cdf99cd02fb3.png" 
+                src="/KitLog-Logo-Icon-W.svg" 
                 alt="KitLog Logo" 
                 className="w-6 h-6"
               />
-            </div>
+            </Link>
             <span className="text-xl font-semibold text-gray-900">KitLog</span>
           </div>
           
           <nav className="hidden md:flex items-center space-x-8">
-            <a href="#features" className="text-gray-600 hover:text-gray-900 transition-colors text-sm font-medium">
+            <a href="/#features" className="text-gray-600 hover:text-gray-900 transition-colors text-sm font-medium">
               Features
             </a>
-            <a href="#pricing" className="text-gray-600 hover:text-gray-900 transition-colors text-sm font-medium">
+            <a href="/#pricing" className="text-gray-600 hover:text-gray-900 transition-colors text-sm font-medium">
               Pricing
             </a>
-            <button className="bg-orange text-white px-5 py-2 rounded-full text-sm font-medium hover:bg-orange-600 transition-colors shadow-apple">
+            <a href="#cta" className="bg-orange text-white px-5 py-2 rounded-full text-sm font-medium hover:bg-orange-600 transition-colors shadow-apple">
               Join Beta
-            </button>
+            </a>
           </nav>
         </div>
       </div>
