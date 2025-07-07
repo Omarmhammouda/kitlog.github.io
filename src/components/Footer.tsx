@@ -43,7 +43,10 @@ const Footer = () => {
             </div>
           </div>
           
+<<<<<<< HEAD
         </div>
+=======
+>>>>>>> 6d46bc103383f8f0f6633e6f7751742c9254b8ae
         
         <div className="border-t border-gray-700 pt-8">
           <div className="flex flex-col md:flex-row justify-between items-center">
