@@ -11,11 +11,12 @@ const CTASection = () => {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (email) {
+      // Use environment variable for API URL, fallback to localhost for development
+      const apiUrl = import.meta.env.VITE_API_URL || 'http://localhost:8000';
+      console.log('API URL:', apiUrl);
+      console.log('Environment variables:', import.meta.env);
+      
       try {
-        // Use environment variable for API URL, fallback to localhost for development
-        const apiUrl = import.meta.env.VITE_API_URL || 'http://localhost:8000';
-        console.log('API URL:', apiUrl);
-        console.log('Environment variables:', import.meta.env);
         const res = await fetch(`${apiUrl}/api/v1/signups/`, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
