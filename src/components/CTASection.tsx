@@ -9,6 +9,7 @@ const CTASection = () => {
   const { toast } = useToast();
 
   const handleSubmit = async (e: React.FormEvent) => {
+    console.log('handleSubmit called with email:', email);
     e.preventDefault();
     if (email) {
       // Use environment variable for API URL, fallback to localhost for development
