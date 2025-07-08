@@ -19,7 +19,7 @@ class Settings(BaseSettings):
     ]
     
     # Database
-    DATABASE_URL: str = "sqlite:///./kitlog.db"
+    DATABASE_URL: str = "postgresql://user:password@localhost/kitlog"
     
     # Redis
     REDIS_URL: str = "redis://localhost:6379"
