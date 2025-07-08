@@ -18,8 +18,8 @@ class Settings(BaseSettings):
         "https://kitlog.io"
     ]
     
-    # Database
-    DATABASE_URL: str = "postgresql://user:password@localhost/kitlog"
+    # Database - will be overridden by Railway's DATABASE_URL
+    DATABASE_URL: str = "sqlite:///./kitlog.db"
     
     # Redis
     REDIS_URL: str = "redis://localhost:6379"
