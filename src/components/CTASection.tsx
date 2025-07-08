@@ -12,10 +12,12 @@ const CTASection = () => {
     e.preventDefault();
     if (email) {
       try {
-        const res = await fetch('http://localhost:4000/api/collect-email', {
+        // Use environment variable for API URL, fallback to localhost for development
+        const apiUrl = import.meta.env.VITE_API_URL || 'http://localhost:8000';
+        const res = await fetch(`${apiUrl}/api/v1/signups/`, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ email }),
+          body: JSON.stringify({ email, source: 'cta_section' }),
         });
         if (res.ok) {
           setIsSubmitted(true);

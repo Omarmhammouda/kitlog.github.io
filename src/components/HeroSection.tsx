@@ -31,17 +31,31 @@ const HeroSection = () => {
     return () => clearInterval(timer);
   }, []);
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (name && email) {
-      setIsSubmitted(true);
-      setSignupCount(prev => prev + 1);
-      setAnimatedCount(prev => prev + 1);
-      toast({
-        title: "Welcome to KitLog!",
-        description: "You're on the beta waitlist. We'll be in touch soon!",
-      });
-      console.log('Beta signup:', { name, email });
+      try {
+        const apiUrl = import.meta.env.VITE_API_URL || 'http://localhost:8000';
+        const res = await fetch(`${apiUrl}/api/v1/signups/`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ name, email, source: 'hero_section' }),
+        });
+        
+        if (res.ok) {
+          setIsSubmitted(true);
+          setSignupCount(prev => prev + 1);
+          setAnimatedCount(prev => prev + 1);
+          toast({
+            title: "Welcome to KitLog!",
+            description: "You're on the beta waitlist. We'll be in touch soon!",
+          });
+        } else {
+          toast({ title: "Error", description: "Failed to join waitlist." });
+        }
+      } catch (err) {
+        toast({ title: "Error", description: "Network error." });
+      }
     }
   };
 
