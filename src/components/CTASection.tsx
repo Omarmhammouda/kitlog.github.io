@@ -2,6 +2,7 @@
 import { useState } from 'react';
 import { ArrowRight, Check, Mail, Star } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
+import { BASE_SIGNUP_COUNT } from '@/constants';
 
 const CTASection = () => {
   const [email, setEmail] = useState('');
