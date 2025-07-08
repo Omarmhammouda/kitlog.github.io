@@ -1,6 +1,7 @@
 import { ArrowRight } from 'lucide-react';
 import { useState, useEffect } from 'react';
 import { useToast } from '@/hooks/use-toast';
+import { BASE_SIGNUP_COUNT } from '@/constants';
 
 const HeroSection = () => {
   const [name, setName] = useState('');
@@ -10,25 +11,46 @@ const HeroSection = () => {
   const [animatedCount, setAnimatedCount] = useState(0);
   const { toast } = useToast();
 
-  // Initialize signup count and animate it
+  // Fetch real signup count and animate it
   useEffect(() => {
-    const targetCount = 847;
-    setSignupCount(targetCount);
-    
-    // Animate counter
-    let current = 0;
-    const increment = targetCount / 50;
-    const timer = setInterval(() => {
-      current += increment;
-      if (current >= targetCount) {
-        setAnimatedCount(targetCount);
-        clearInterval(timer);
-      } else {
-        setAnimatedCount(Math.floor(current));
+    const fetchSignupCount = async () => {
+      try {
+        const apiUrl = import.meta.env.VITE_API_URL || 'http://localhost:8000';
+        const response = await fetch(`${apiUrl}/api/v1/signups/count`);
+        if (response.ok) {
+          const data = await response.json();
+          const realCount = data.count || 0;
+          const totalCount = BASE_SIGNUP_COUNT + realCount;
+          setSignupCount(totalCount);
+          
+          // Animate counter
+          let current = 0;
+          const increment = totalCount / 50;
+          const timer = setInterval(() => {
+            current += increment;
+            if (current >= totalCount) {
+              setAnimatedCount(totalCount);
+              clearInterval(timer);
+            } else {
+              setAnimatedCount(Math.floor(current));
+            }
+          }, 30);
+          
+          return () => clearInterval(timer);
+        } else {
+          // Fallback to base count if API fails
+          setSignupCount(BASE_SIGNUP_COUNT);
+          setAnimatedCount(BASE_SIGNUP_COUNT);
+        }
+      } catch (error) {
+        console.error('Failed to fetch signup count:', error);
+        // Fallback to base count if API fails
+        setSignupCount(BASE_SIGNUP_COUNT);
+        setAnimatedCount(BASE_SIGNUP_COUNT);
       }
-    }, 30);
-
-    return () => clearInterval(timer);
+    };
+    
+    fetchSignupCount();
   }, []);
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -44,6 +66,7 @@ const HeroSection = () => {
         
         if (res.ok) {
           setIsSubmitted(true);
+          // Increment both counts immediately for instant feedback
           setSignupCount(prev => prev + 1);
           setAnimatedCount(prev => prev + 1);
           toast({
