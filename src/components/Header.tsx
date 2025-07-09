@@ -1,4 +1,5 @@
 import { Link } from 'react-router-dom';
+import AuthButton from '@/components/auth/AuthButton';
 
 const Header = () => {
   return (
@@ -26,6 +27,7 @@ const Header = () => {
             <a href="#cta" className="bg-orange text-white px-5 py-2 rounded-full text-sm font-medium hover:bg-orange-600 transition-colors shadow-apple">
               Join Beta
             </a>
+            <AuthButton />
           </nav>
         </div>
       </div>
