@@ -16,6 +16,7 @@ const PricingSection = () => {
     {
       name: "Pro",
       price: "$15/month",
+      discount: "$7.50/month",
       description: "Ideal for freelancers and small teams",
       features: [
         "Unlimited gear",
@@ -29,6 +30,7 @@ const PricingSection = () => {
     {
       name: "Team",
       price: "$49/month",
+      discount: "$29/month",
       description: "For growing creative teams",
       features: [
         "10+ users",
@@ -85,7 +87,16 @@ const PricingSection = () => {
               
               <div className="text-center mb-8">
                 <h3 className="text-xl font-semibold text-gray-900 mb-2">{plan.name}</h3>
-                <div className="text-3xl font-light text-orange mb-2">{plan.price}</div>
+                <div className="text-3xl font-light text-orange mb-2">
+                  {plan.discount ? (
+                    <div className="flex flex-col items-center">
+                      <span className="line-through text-gray-400 text-2xl">{plan.price}</span>
+                      <span className="text-orange">{plan.discount}</span>
+                    </div>
+                  ) : (
+                    plan.price
+                  )}
+                </div>
                 <p className="text-gray-500 text-sm">{plan.description}</p>
               </div>
 
@@ -102,9 +113,12 @@ const PricingSection = () => {
         </div>
 
         <div className="text-center mt-12">
-          <p className="text-gray-500 mb-4 font-normal">
+        <p className="text-gray-500 mb-4 font-normal">
             All plans include a 14-day free trial. No credit card required.
           </p>
+          <p className="text-gray-500 mb-4 font-normal">
+        🎉 These special prices are only available to early adopters who sign up through the beta waitlist. 🎉
+          </p> 
           <div className="flex flex-wrap justify-center gap-8 text-sm text-gray-400">
             <span>✓ Cancel anytime</span>
             <span>✓ 30-day money-back guarantee</span>

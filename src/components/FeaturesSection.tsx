@@ -31,7 +31,7 @@ const FeaturesSection = () => {
   ];
 
   return (
-    <section id="features" className="py-20 px-4 sm:px-6 lg:px-8">
+    <section id="features" className="py-20 px-4 sm:px-6 lg:px-8 text-center">
       <div className="max-w-7xl mx-auto">
         <div className="text-center mb-16">
           <h2 className="text-4xl md:text-5xl font-bold text-kitlog-text mb-6">
@@ -43,14 +43,34 @@ const FeaturesSection = () => {
           </p>
         </div>
         
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mb-16">
-          {features.map((feature, index) => (
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mb-8 justify-center max-w-6xl mx-auto">
+          {features.slice(0, 3).map((feature, index) => (
             <div 
               key={index}
-              className="bg-white rounded-2xl p-8 shadow-sm hover:shadow-xl transition-all duration-300 group cursor-pointer animate-fade-in"
+              className="bg-white rounded-2xl p-8 shadow-sm hover:shadow-xl transition-all duration-300 group cursor-pointer animate-fade-in text-center"
               style={{ animationDelay: `${index * 0.1}s` }}
             >
-              <div className="w-16 h-16 bg-teal-50 rounded-2xl mb-6 flex items-center justify-center group-hover:bg-teal-100 transition-colors">
+              <div className="w-16 h-16 bg-teal-50 rounded-2xl mb-6 flex items-center justify-center group-hover:bg-teal-100 transition-colors mx-auto">
+                <feature.icon className="w-8 h-8 text-teal-600" />
+              </div>
+              <h3 className="text-xl font-semibold text-kitlog-text mb-4">
+                {feature.title}
+              </h3>
+              <p className="text-gray-600 leading-relaxed">
+                {feature.description}
+              </p>
+            </div>
+          ))}
+        </div>
+        
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-16 justify-center max-w-4xl mx-auto">
+          {features.slice(3).map((feature, index) => (
+            <div 
+              key={index + 3}
+              className="bg-white rounded-2xl p-8 shadow-sm hover:shadow-xl transition-all duration-300 group cursor-pointer animate-fade-in text-center"
+              style={{ animationDelay: `${(index + 3) * 0.1}s` }}
+            >
+              <div className="w-16 h-16 bg-teal-50 rounded-2xl mb-6 flex items-center justify-center group-hover:bg-teal-100 transition-colors mx-auto">
                 <feature.icon className="w-8 h-8 text-teal-600" />
               </div>
               <h3 className="text-xl font-semibold text-kitlog-text mb-4">

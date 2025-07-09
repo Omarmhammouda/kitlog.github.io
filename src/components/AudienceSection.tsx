@@ -31,7 +31,7 @@ const AudienceSection = () => {
   ];
 
   return (
-    <section className="py-20 px-4 sm:px-6 lg:px-8 bg-gray-50">
+    <section className="py-20 px-4 sm:px-6 lg:px-8 bg-gray-50 text-center">
       <div className="max-w-7xl mx-auto">
         <div className="text-center mb-16">
           <h2 className="text-4xl md:text-5xl font-bold text-kitlog-text mb-6">
@@ -43,14 +43,14 @@ const AudienceSection = () => {
           </p>
         </div>
         
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 justify-center max-w-6xl mx-auto">
           {audiences.slice(0, 3).map((audience, index) => (
             <div 
               key={index}
-              className="bg-white rounded-2xl p-8 shadow-sm hover:shadow-lg transition-all duration-300 group animate-fade-in"
+              className="bg-white rounded-2xl p-8 shadow-sm hover:shadow-lg transition-all duration-300 group animate-fade-in text-center"
               style={{ animationDelay: `${index * 0.1}s` }}
             >
-              <div className="w-16 h-16 bg-orange-50 rounded-2xl mb-6 flex items-center justify-center group-hover:bg-orange-100 transition-colors">
+              <div className="w-16 h-16 bg-orange-50 rounded-2xl mb-6 flex items-center justify-center group-hover:bg-orange-100 transition-colors mx-auto">
                 <audience.icon className="w-8 h-8 text-orange-600" />
               </div>
               <h3 className="text-xl font-semibold text-kitlog-text mb-4">
@@ -63,14 +63,14 @@ const AudienceSection = () => {
           ))}
         </div>
         
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mt-8 max-w-4xl mx-auto">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mt-8 max-w-4xl mx-auto justify-center">
           {audiences.slice(3).map((audience, index) => (
             <div 
               key={index + 3}
-              className="bg-white rounded-2xl p-8 shadow-sm hover:shadow-lg transition-all duration-300 group animate-fade-in"
+              className="bg-white rounded-2xl p-8 shadow-sm hover:shadow-lg transition-all duration-300 group animate-fade-in text-center"
               style={{ animationDelay: `${(index + 3) * 0.1}s` }}
             >
-              <div className="w-16 h-16 bg-teal-50 rounded-2xl mb-6 flex items-center justify-center group-hover:bg-teal-100 transition-colors">
+              <div className="w-16 h-16 bg-teal-50 rounded-2xl mb-6 flex items-center justify-center group-hover:bg-teal-100 transition-colors mx-auto">
                 <audience.icon className="w-8 h-8 text-teal-600" />
               </div>
               <h3 className="text-xl font-semibold text-kitlog-text mb-4">
