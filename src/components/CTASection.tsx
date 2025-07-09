@@ -2,7 +2,6 @@
 import { useState } from 'react';
 import { ArrowRight, Check, Mail, Star } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
-import { BASE_SIGNUP_COUNT } from '@/constants';
 
 const CTASection = () => {
   const [email, setEmail] = useState('');
@@ -110,7 +109,7 @@ const CTASection = () => {
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                   placeholder="Enter your email address"
-                  className="flex-1 px-6 py-4 rounded-xl text-kitlog-text text-lg border-0 focus:ring-4 focus:ring-white/30 outline-none"
+                  className="flex-1 px-6 py-4 rounded-xl text-black text-lg border-0 focus:ring-4 focus:ring-white/30 outline-none"
                   required
                 />
                 <button
