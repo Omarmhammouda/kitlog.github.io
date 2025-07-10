@@ -7,6 +7,7 @@ from app.api.v1.api import api_router
 from app.core.config import settings
 from app.models.base import engine, Base
 from app.models.signup import EmailSignup  # Import to register the table
+from app.models.equipment import Equipment  # Import to register the table
 
 # Load environment variables
 load_dotenv()
