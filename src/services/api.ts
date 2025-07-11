@@ -1,4 +1,6 @@
+console.log('🔍 Environment variable VITE_API_URL:', import.meta.env.VITE_API_URL);
 const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:8000';
+console.log('🔍 Final API_BASE_URL:', API_BASE_URL);
 
 export interface Equipment {
   id: number;
@@ -71,8 +73,13 @@ class ApiService {
     options: RequestInit = {}
   ): Promise<T> {
     const headers = await this.getAuthHeaders();
+    const fullUrl = `${API_BASE_URL}${endpoint}`;
     
-    const response = await fetch(`${API_BASE_URL}${endpoint}`, {
+    console.log('🔍 Making API request to:', fullUrl);
+    console.log('🔍 API_BASE_URL:', API_BASE_URL);
+    console.log('🔍 endpoint:', endpoint);
+    
+    const response = await fetch(fullUrl, {
       ...options,
       headers: {
         ...headers,
