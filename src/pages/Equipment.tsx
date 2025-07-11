@@ -1,91 +1,101 @@
 import { useEffect, useState } from 'react';
 import { useAuth } from '@/hooks/useAuth';
 import ProtectedRoute from '@/components/auth/ProtectedRoute';
-import { apiService, Equipment } from '@/services/api';
-import { Package, Plus, Edit, Trash2, Search } from 'lucide-react';
+import { apiService, EquipmentCreate } from '@/services/api';
+import { Package, Plus, ArrowLeft, Check } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
 
 const EquipmentPage = () => {
   const { user, getAccessToken } = useAuth();
-  const [equipment, setEquipment] = useState<Equipment[]>([]);
-  const [loading, setLoading] = useState(true);
+  const navigate = useNavigate();
+  const [loading, setLoading] = useState(false);
+  const [success, setSuccess] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const [searchTerm, setSearchTerm] = useState('');
+  
+  const [formData, setFormData] = useState<EquipmentCreate>({
+    name: '',
+    category: '',
+    description: '',
+    brand: '',
+    model: '',
+    serial_number: '',
+    condition: 'good',
+    is_available: true,
+    location: '',
+    notes: '',
+    owner_id: user.id,
+    owner_name: user.name,
+  });
 
   useEffect(() => {
     apiService.setTokenGetter(getAccessToken);
   }, [getAccessToken]);
 
-  useEffect(() => {
-    const fetchEquipment = async () => {
-      try {
-        setLoading(true);
-        const userEquipment = await apiService.getEquipment({
-          owner_id: user.id,
-        });
-        setEquipment(userEquipment);
-      } catch (err) {
-        console.error('Error fetching equipment:', err);
-        setError('Failed to load equipment');
-      } finally {
-        setLoading(false);
-      }
-    };
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
+    const { name, value, type } = e.target;
+    setFormData(prev => ({
+      ...prev,
+      [name]: type === 'checkbox' ? (e.target as HTMLInputElement).checked : value
+    }));
+  };
 
-    if (user.id) {
-      fetchEquipment();
-    }
-  }, [user.id]);
-
-  const filteredEquipment = equipment.filter(item =>
-    item.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    item.category.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    (item.brand && item.brand.toLowerCase().includes(searchTerm.toLowerCase()))
-  );
-
-  const handleAddEquipment = async () => {
-    // For now, let's add a test item
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setLoading(true);
+    setError(null);
+    
     try {
-      const newItem = await apiService.createEquipment({
-        name: 'Test Equipment',
-        category: 'Test Category',
-        description: 'Test equipment added from the UI',
-        condition: 'good',
-        is_available: true,
+      await apiService.createEquipment({
+        ...formData,
         owner_id: user.id,
         owner_name: user.name,
       });
-      setEquipment(prev => [...prev, newItem]);
+      
+      setSuccess(true);
+      setTimeout(() => {
+        navigate('/dashboard');
+      }, 1500);
     } catch (err) {
-      console.error('Error adding equipment:', err);
+      console.error('Error creating equipment:', err);
+      setError('Failed to add equipment. Please try again.');
+    } finally {
+      setLoading(false);
     }
   };
 
-  if (loading) {
-    return (
-      <ProtectedRoute>
-        <div className="min-h-screen bg-gray-50 flex items-center justify-center">
-          <div className="text-center">
-            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-orange-600 mx-auto"></div>
-            <p className="mt-4 text-gray-600">Loading equipment...</p>
-          </div>
-        </div>
-      </ProtectedRoute>
-    );
-  }
+  const categories = [
+    'Camera',
+    'Lens',
+    'Lighting',
+    'Audio',
+    'Video',
+    'Tripod',
+    'Drone',
+    'Computer',
+    'Storage',
+    'Accessories',
+    'Other'
+  ];
 
-  if (error) {
+  const conditions = [
+    { value: 'excellent', label: 'Excellent' },
+    { value: 'good', label: 'Good' },
+    { value: 'fair', label: 'Fair' },
+    { value: 'poor', label: 'Poor' },
+    { value: 'needs_repair', label: 'Needs Repair' }
+  ];
+
+  if (success) {
     return (
       <ProtectedRoute>
-        <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+        <div className="min-h-screen bg-white flex items-center justify-center">
           <div className="text-center">
-            <Package className="h-12 w-12 text-red-500 mx-auto mb-4" />
-            <p className="text-red-600 font-medium">{error}</p>
-            <button
-              onClick={() => window.location.reload()}
-              className="mt-4 px-4 py-2 bg-orange-600 text-white rounded-lg hover:bg-orange-700 transition-colors"
-            >
-              Try Again
-            </button>
+            <div className="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4">
+              <Check className="h-8 w-8 text-green-600" />
+            </div>
+            <h1 className="text-2xl font-light text-gray-900 mb-2">Equipment Added Successfully!</h1>
+            <p className="text-gray-600 mb-4">Redirecting to dashboard...</p>
+            <div className="w-8 h-8 border-2 border-orange-200 border-t-orange-600 rounded-full animate-spin mx-auto"></div>
           </div>
         </div>
       </ProtectedRoute>
@@ -94,111 +104,220 @@ const EquipmentPage = () => {
 
   return (
     <ProtectedRoute>
-      <div className="min-h-screen bg-gray-50">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-          {/* Header */}
-          <div className="mb-8">
-            <h1 className="text-3xl font-light text-gray-900">Equipment</h1>
-            <p className="mt-2 text-gray-600">
-              Manage your creative equipment inventory
-            </p>
-          </div>
-
-          {/* Search and Add */}
-          <div className="mb-6 flex flex-col sm:flex-row gap-4 justify-between">
-            <div className="relative flex-1 max-w-md">
-              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-gray-400" />
-              <input
-                type="text"
-                placeholder="Search equipment..."
-                value={searchTerm}
-                onChange={(e) => setSearchTerm(e.target.value)}
-                className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-transparent"
-              />
+      <div className="min-h-screen bg-white">
+        {/* Header */}
+        <div className="bg-gradient-to-br from-orange-50 to-gray-50 py-12 px-6 lg:px-8">
+          <div className="max-w-3xl mx-auto">
+            <div className="flex items-center mb-6">
+              <button
+                onClick={() => navigate('/dashboard')}
+                className="mr-4 p-2 text-gray-600 hover:text-orange-600 transition-colors"
+              >
+                <ArrowLeft className="h-6 w-6" />
+              </button>
+              <div>
+                <h1 className="text-4xl font-light text-gray-900 mb-2">Add Equipment</h1>
+                <p className="text-xl text-gray-600">Add a new piece of equipment to your inventory</p>
+              </div>
             </div>
-            <button
-              onClick={handleAddEquipment}
-              className="flex items-center gap-2 px-4 py-2 bg-orange-600 text-white rounded-lg hover:bg-orange-700 transition-colors"
-            >
-              <Plus className="h-5 w-5" />
-              Add Equipment
-            </button>
           </div>
+        </div>
 
-          {/* Equipment List */}
-          {filteredEquipment.length === 0 ? (
-            <div className="text-center py-12">
-              <Package className="h-12 w-12 text-gray-400 mx-auto mb-4" />
-              <h3 className="text-lg font-medium text-gray-900 mb-2">
-                No equipment found
-              </h3>
-              <p className="text-gray-600 mb-4">
-                {searchTerm ? 'No equipment matches your search.' : 'Start by adding your first piece of equipment.'}
-              </p>
-              {!searchTerm && (
-                <button
-                  onClick={handleAddEquipment}
-                  className="inline-flex items-center gap-2 px-4 py-2 bg-orange-600 text-white rounded-lg hover:bg-orange-700 transition-colors"
-                >
-                  <Plus className="h-5 w-5" />
-                  Add Your First Equipment
-                </button>
-              )}
-            </div>
-          ) : (
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-              {filteredEquipment.map((item) => (
-                <div
-                  key={item.id}
-                  className="bg-white rounded-lg shadow-sm border border-gray-200 p-6 hover:shadow-md transition-shadow"
-                >
-                  <div className="flex items-start justify-between mb-4">
-                    <div className="flex-1">
-                      <h3 className="text-lg font-medium text-gray-900 mb-1">
-                        {item.name}
-                      </h3>
-                      <p className="text-sm text-gray-600">{item.category}</p>
-                    </div>
-                    <div className="flex items-center gap-2">
-                      <button className="p-2 text-gray-400 hover:text-orange-600 transition-colors">
-                        <Edit className="h-4 w-4" />
-                      </button>
-                      <button className="p-2 text-gray-400 hover:text-red-600 transition-colors">
-                        <Trash2 className="h-4 w-4" />
-                      </button>
-                    </div>
+        {/* Form */}
+        <div className="py-12 px-6 lg:px-8">
+          <div className="max-w-3xl mx-auto">
+            <form onSubmit={handleSubmit} className="space-y-8">
+              {/* Basic Information */}
+              <div className="bg-white rounded-3xl p-8 shadow-apple border border-gray-100">
+                <h2 className="text-2xl font-light text-gray-900 mb-6">Basic Information</h2>
+                
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                      Equipment Name *
+                    </label>
+                    <input
+                      type="text"
+                      name="name"
+                      value={formData.name}
+                      onChange={handleInputChange}
+                      required
+                      className="w-full px-4 py-3 border border-gray-300 rounded-2xl focus:ring-2 focus:ring-orange-500 focus:border-transparent transition-colors"
+                      placeholder="e.g., Canon EOS R5"
+                    />
                   </div>
                   
-                  {item.brand && (
-                    <p className="text-sm text-gray-600 mb-2">
-                      <span className="font-medium">Brand:</span> {item.brand}
-                    </p>
-                  )}
-                  
-                  {item.description && (
-                    <p className="text-sm text-gray-600 mb-4">
-                      {item.description}
-                    </p>
-                  )}
-                  
-                  <div className="flex items-center justify-between">
-                    <span
-                      className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${
-                        item.is_available
-                          ? 'bg-green-100 text-green-800'
-                          : 'bg-red-100 text-red-800'
-                      }`}
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                      Category *
+                    </label>
+                    <select
+                      name="category"
+                      value={formData.category}
+                      onChange={handleInputChange}
+                      required
+                      className="w-full px-4 py-3 border border-gray-300 rounded-2xl focus:ring-2 focus:ring-orange-500 focus:border-transparent transition-colors"
                     >
-                      {item.is_available ? 'Available' : 'In Use'}
-                    </span>
-                    <span className="text-xs text-gray-500">
-                      {item.condition}
-                    </span>
+                      <option value="">Select a category</option>
+                      {categories.map(category => (
+                        <option key={category} value={category}>{category}</option>
+                      ))}
+                    </select>
+                  </div>
+                  
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                      Brand
+                    </label>
+                    <input
+                      type="text"
+                      name="brand"
+                      value={formData.brand}
+                      onChange={handleInputChange}
+                      className="w-full px-4 py-3 border border-gray-300 rounded-2xl focus:ring-2 focus:ring-orange-500 focus:border-transparent transition-colors"
+                      placeholder="e.g., Canon"
+                    />
+                  </div>
+                  
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                      Model
+                    </label>
+                    <input
+                      type="text"
+                      name="model"
+                      value={formData.model}
+                      onChange={handleInputChange}
+                      className="w-full px-4 py-3 border border-gray-300 rounded-2xl focus:ring-2 focus:ring-orange-500 focus:border-transparent transition-colors"
+                      placeholder="e.g., EOS R5"
+                    />
                   </div>
                 </div>
-              ))}
-            </div>
-          )}
+                
+                <div className="mt-6">
+                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                    Description
+                  </label>
+                  <textarea
+                    name="description"
+                    value={formData.description}
+                    onChange={handleInputChange}
+                    rows={3}
+                    className="w-full px-4 py-3 border border-gray-300 rounded-2xl focus:ring-2 focus:ring-orange-500 focus:border-transparent transition-colors"
+                    placeholder="Brief description of the equipment..."
+                  />
+                </div>
+              </div>
+
+              {/* Details */}
+              <div className="bg-white rounded-3xl p-8 shadow-apple border border-gray-100">
+                <h2 className="text-2xl font-light text-gray-900 mb-6">Details</h2>
+                
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                      Serial Number
+                    </label>
+                    <input
+                      type="text"
+                      name="serial_number"
+                      value={formData.serial_number}
+                      onChange={handleInputChange}
+                      className="w-full px-4 py-3 border border-gray-300 rounded-2xl focus:ring-2 focus:ring-orange-500 focus:border-transparent transition-colors"
+                      placeholder="e.g., 1234567890"
+                    />
+                  </div>
+                  
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                      Condition
+                    </label>
+                    <select
+                      name="condition"
+                      value={formData.condition}
+                      onChange={handleInputChange}
+                      className="w-full px-4 py-3 border border-gray-300 rounded-2xl focus:ring-2 focus:ring-orange-500 focus:border-transparent transition-colors"
+                    >
+                      {conditions.map(condition => (
+                        <option key={condition.value} value={condition.value}>{condition.label}</option>
+                      ))}
+                    </select>
+                  </div>
+                  
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                      Location
+                    </label>
+                    <input
+                      type="text"
+                      name="location"
+                      value={formData.location}
+                      onChange={handleInputChange}
+                      className="w-full px-4 py-3 border border-gray-300 rounded-2xl focus:ring-2 focus:ring-orange-500 focus:border-transparent transition-colors"
+                      placeholder="e.g., Studio A, Shelf 2"
+                    />
+                  </div>
+                  
+                  <div className="flex items-center">
+                    <input
+                      type="checkbox"
+                      name="is_available"
+                      checked={formData.is_available}
+                      onChange={handleInputChange}
+                      className="h-4 w-4 text-orange-600 rounded focus:ring-orange-500 border-gray-300"
+                    />
+                    <label className="ml-2 block text-sm text-gray-700">
+                      Currently available
+                    </label>
+                  </div>
+                </div>
+                
+                <div className="mt-6">
+                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                    Notes
+                  </label>
+                  <textarea
+                    name="notes"
+                    value={formData.notes}
+                    onChange={handleInputChange}
+                    rows={3}
+                    className="w-full px-4 py-3 border border-gray-300 rounded-2xl focus:ring-2 focus:ring-orange-500 focus:border-transparent transition-colors"
+                    placeholder="Any additional notes..."
+                  />
+                </div>
+              </div>
+
+              {/* Error Message */}
+              {error && (
+                <div className="bg-red-50 border border-red-200 rounded-2xl p-4">
+                  <p className="text-red-700 text-sm">{error}</p>
+                </div>
+              )}
+
+              {/* Submit Button */}
+              <div className="flex items-center justify-end gap-4">
+                <button
+                  type="button"
+                  onClick={() => navigate('/dashboard')}
+                  className="px-6 py-3 text-gray-600 hover:text-gray-800 transition-colors"
+                >
+                  Cancel
+                </button>
+                <button
+                  type="submit"
+                  disabled={loading}
+                  className="flex items-center gap-2 px-8 py-3 bg-orange-600 text-white rounded-2xl hover:bg-orange-700 focus:ring-2 focus:ring-orange-500 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200 transform hover:scale-105"
+                >
+                  {loading ? (
+                    <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
+                  ) : (
+                    <Plus className="h-5 w-5" />
+                  )}
+                  {loading ? 'Adding...' : 'Add Equipment'}
+                </button>
+              </div>
+            </form>
+          </div>
         </div>
       </div>
     </ProtectedRoute>

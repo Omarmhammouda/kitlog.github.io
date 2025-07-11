@@ -7,6 +7,7 @@ import Auth0Provider from "@/components/Auth0Provider";
 import Index from "./pages/Index";
 import Callback from "./pages/Callback";
 import Dashboard from "./pages/Dashboard";
+import Equipment from "./pages/Equipment";
 import NotFound from "./pages/NotFound";
 import PrivacyPolicy from "./pages/PrivacyPolicy";
 import TermsOfService from "./pages/TermsOfService";
@@ -25,6 +26,9 @@ const App = () => (
           <Route path="/" element={<Index />} />
           <Route path="/callback" element={<Callback />} />
           <Route path="/dashboard" element={<Dashboard />} />
+          <Route path="/equipment" element={<Equipment />} />
+          <Route path="/equipment/new" element={<Equipment />} />
+          <Route path="/reports" element={<div className="min-h-screen bg-gray-50 flex items-center justify-center"><div className="text-center"><h1 className="text-3xl font-light text-gray-900 mb-4">Reports</h1><p className="text-gray-600">Coming soon...</p></div></div>} />
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
           <Route path="/privacy-policy" element={<PrivacyPolicy />} />
           <Route path="/terms-of-service" element={<TermsOfService />} />
