@@ -13,6 +13,8 @@ class EquipmentBase(BaseModel):
     is_available: bool = True
     location: Optional[str] = None
     notes: Optional[str] = None
+    owner_id: Optional[str] = None
+    owner_name: Optional[str] = None
 
 class EquipmentCreate(EquipmentBase):
     pass
@@ -28,6 +30,8 @@ class EquipmentUpdate(BaseModel):
     is_available: Optional[bool] = None
     location: Optional[str] = None
     notes: Optional[str] = None
+    owner_id: Optional[str] = None
+    owner_name: Optional[str] = None
 
 class EquipmentResponse(EquipmentBase):
     id: int
