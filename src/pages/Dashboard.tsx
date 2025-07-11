@@ -1,5 +1,6 @@
 import { useAuth } from '@/hooks/useAuth';
 import ProtectedRoute from '@/components/auth/ProtectedRoute';
+import AccessControl from '@/components/auth/AccessControl';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Package, BarChart3, Activity, User, ArrowRight, Plus } from 'lucide-react';
 import { useEffect, useState } from 'react';
@@ -75,6 +76,7 @@ const Dashboard = () => {
 
   return (
     <ProtectedRoute>
+      <AccessControl requireDashboard={true}>
       <div className="min-h-screen bg-white">
         {/* Header */}
         <div className="bg-gradient-to-br from-orange-50 to-gray-50 py-12 px-6 lg:px-8">
@@ -216,6 +218,7 @@ const Dashboard = () => {
           </div>
         </div>
       </div>
+      </AccessControl>
     </ProtectedRoute>
   );
 };

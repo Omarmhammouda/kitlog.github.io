@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import { useAuth } from '@/hooks/useAuth';
 import ProtectedRoute from '@/components/auth/ProtectedRoute';
+import AccessControl from '@/components/auth/AccessControl';
 import { apiService, EquipmentCreate } from '@/services/api';
 import { Package, Plus, ArrowLeft, Check } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
@@ -88,6 +89,7 @@ const EquipmentPage = () => {
   if (success) {
     return (
       <ProtectedRoute>
+        <AccessControl requireEquipment={true}>
         <div className="min-h-screen bg-white flex items-center justify-center">
           <div className="text-center">
             <div className="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4">
@@ -98,12 +100,14 @@ const EquipmentPage = () => {
             <div className="w-8 h-8 border-2 border-orange-200 border-t-orange-600 rounded-full animate-spin mx-auto"></div>
           </div>
         </div>
+        </AccessControl>
       </ProtectedRoute>
     );
   }
 
   return (
     <ProtectedRoute>
+      <AccessControl requireEquipment={true}>
       <div className="min-h-screen bg-white">
         {/* Header */}
         <div className="bg-gradient-to-br from-orange-50 to-gray-50 py-12 px-6 lg:px-8">
@@ -320,6 +324,7 @@ const EquipmentPage = () => {
           </div>
         </div>
       </div>
+      </AccessControl>
     </ProtectedRoute>
   );
 };
