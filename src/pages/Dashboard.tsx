@@ -2,22 +2,76 @@ import { useAuth } from '@/hooks/useAuth';
 import ProtectedRoute from '@/components/auth/ProtectedRoute';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Package, BarChart3, Activity, User, ArrowRight, Plus } from 'lucide-react';
+import { useEffect, useState } from 'react';
+import { apiService, EquipmentStats } from '@/services/api';
+import { useNavigate } from 'react-router-dom';
 
 const Dashboard = () => {
-  const { user } = useAuth();
+  const { user, getAccessToken } = useAuth();
+  const navigate = useNavigate();
+  const [stats, setStats] = useState<EquipmentStats>({
+    total_items: 0,
+    available_items: 0,
+    in_use_items: 0,
+    categories: 0,
+  });
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
 
-  const stats = [
-    { label: 'Total Items', value: '0', icon: Package, color: 'bg-orange-50 text-orange-600' },
-    { label: 'Categories', value: '0', icon: BarChart3, color: 'bg-blue-50 text-blue-600' },
-    { label: 'Available', value: '0', icon: Activity, color: 'bg-green-50 text-green-600' },
-    { label: 'In Use', value: '0', icon: User, color: 'bg-purple-50 text-purple-600' },
+  useEffect(() => {
+    const fetchStats = async () => {
+      try {
+        const userStats = await apiService.getEquipmentStats(user.id);
+        setStats(userStats);
+      } catch (err) {
+        console.error('Error fetching stats:', err);
+        setError('Failed to load equipment statistics');
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    if (user.id) {
+      fetchStats();
+    }
+  }, [user.id]);
+
+  // Initialize API service with token getter
+  useEffect(() => {
+    apiService.setTokenGetter(getAccessToken);
+  }, [getAccessToken]);
+
+  const statsDisplay = [
+    { label: 'Total Items', value: stats.total_items.toString(), icon: Package, color: 'bg-orange-50 text-orange-600' },
+    { label: 'Categories', value: stats.categories.toString(), icon: BarChart3, color: 'bg-blue-50 text-blue-600' },
+    { label: 'Available', value: stats.available_items.toString(), icon: Activity, color: 'bg-green-50 text-green-600' },
+    { label: 'In Use', value: stats.in_use_items.toString(), icon: User, color: 'bg-purple-50 text-purple-600' },
   ];
 
   const quickActions = [
-    { label: 'Add New Item', description: 'Add equipment to your inventory', icon: Plus },
-    { label: 'Check Out Item', description: 'Assign equipment to a project', icon: ArrowRight },
-    { label: 'View Reports', description: 'See usage analytics', icon: BarChart3 },
+    { 
+      label: 'Add New Item', 
+      description: 'Add equipment to your inventory', 
+      icon: Plus,
+      onClick: () => navigate('/equipment/new')
+    },
+    { 
+      label: 'View Equipment', 
+      description: 'Browse and manage your equipment', 
+      icon: Package,
+      onClick: () => navigate('/equipment')
+    },
+    { 
+      label: 'View Reports', 
+      description: 'See usage analytics', 
+      icon: BarChart3,
+      onClick: () => navigate('/reports')
+    },
   ];
+
+  const handleQuickAction = (action: typeof quickActions[0]) => {
+    action.onClick();
+  };
 
   return (
     <ProtectedRoute>
@@ -36,22 +90,37 @@ const Dashboard = () => {
 
             {/* Stats Grid */}
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 animate-fade-in">
-              {stats.map((stat, index) => {
-                const Icon = stat.icon;
-                return (
-                  <div key={index} className="bg-white rounded-2xl p-6 shadow-apple hover:shadow-apple-lg transition-all duration-200">
+              {loading ? (
+                // Loading skeleton
+                Array.from({ length: 4 }).map((_, index) => (
+                  <div key={index} className="bg-white rounded-2xl p-6 shadow-apple">
                     <div className="flex items-center justify-between">
                       <div>
-                        <p className="text-sm font-medium text-gray-600">{stat.label}</p>
-                        <p className="text-3xl font-light text-gray-900 mt-1">{stat.value}</p>
+                        <div className="h-4 bg-gray-200 rounded w-20 mb-2 animate-pulse"></div>
+                        <div className="h-8 bg-gray-200 rounded w-12 animate-pulse"></div>
                       </div>
-                      <div className={`w-12 h-12 rounded-2xl flex items-center justify-center ${stat.color}`}>
-                        <Icon className="w-6 h-6" />
-                      </div>
+                      <div className="w-12 h-12 bg-gray-200 rounded-2xl animate-pulse"></div>
                     </div>
                   </div>
-                );
-              })}
+                ))
+              ) : (
+                statsDisplay.map((stat, index) => {
+                  const Icon = stat.icon;
+                  return (
+                    <div key={index} className="bg-white rounded-2xl p-6 shadow-apple hover:shadow-apple-lg transition-all duration-200">
+                      <div className="flex items-center justify-between">
+                        <div>
+                          <p className="text-sm font-medium text-gray-600">{stat.label}</p>
+                          <p className="text-3xl font-light text-gray-900 mt-1">{stat.value}</p>
+                        </div>
+                        <div className={`w-12 h-12 rounded-2xl flex items-center justify-center ${stat.color}`}>
+                          <Icon className="w-6 h-6" />
+                        </div>
+                      </div>
+                    </div>
+                  );
+                })
+              )}
             </div>
           </div>
         </div>
@@ -68,6 +137,7 @@ const Dashboard = () => {
                   return (
                     <button
                       key={index}
+                      onClick={() => handleQuickAction(action)}
                       className="bg-white rounded-2xl p-6 shadow-apple hover:shadow-apple-lg transition-all duration-200 text-left group hover:scale-105 transform"
                     >
                       <div className="flex items-center justify-between mb-4">
