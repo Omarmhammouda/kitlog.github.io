@@ -104,7 +104,7 @@ class ApiService {
     });
 
     const queryString = searchParams.toString();
-    const endpoint = `/api/v1/equipment${queryString ? `?${queryString}` : ''}`;
+    const endpoint = `/api/v1/equipment/${queryString ? `?${queryString}` : ''}`;
     
     return this.makeRequest<Equipment[]>(endpoint);
   }
@@ -134,12 +134,12 @@ class ApiService {
   }
 
   async getEquipmentStats(owner_id?: string): Promise<EquipmentStats> {
-    const endpoint = `/api/v1/equipment/stats/summary${owner_id ? `?owner_id=${owner_id}` : ''}`;
+    const endpoint = `/api/v1/equipment/stats/summary/${owner_id ? `?owner_id=${owner_id}` : ''}`;
     return this.makeRequest<EquipmentStats>(endpoint);
   }
 
   async getEquipmentCategories(): Promise<{ categories: string[] }> {
-    return this.makeRequest<{ categories: string[] }>('/api/v1/equipment/categories/list');
+    return this.makeRequest<{ categories: string[] }>('/api/v1/equipment/categories/list/');
   }
 }
 
