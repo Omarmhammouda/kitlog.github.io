@@ -36,6 +36,7 @@ def get_equipment(
     limit: int = 100,
     category: Optional[str] = None,
     available_only: bool = False,
+    owner_id: Optional[str] = None,
     db: Session = Depends(get_db)
 ):
     """Get all equipment with optional filtering"""
@@ -46,6 +47,9 @@ def get_equipment(
     
     if available_only:
         query = query.filter(Equipment.is_available == True)
+    
+    if owner_id:
+        query = query.filter(Equipment.owner_id == owner_id)
     
     equipment = query.offset(skip).limit(limit).all()
     return equipment
@@ -105,12 +109,17 @@ def get_equipment_categories(db: Session = Depends(get_db)):
     return {"categories": [cat[0] for cat in categories if cat[0]]}
 
 @router.get("/stats/summary")
-def get_equipment_stats(db: Session = Depends(get_db)):
-    """Get equipment statistics"""
-    total_items = db.query(Equipment).count()
-    available_items = db.query(Equipment).filter(Equipment.is_available == True).count()
+def get_equipment_stats(owner_id: Optional[str] = None, db: Session = Depends(get_db)):
+    """Get equipment statistics, optionally filtered by owner"""
+    query = db.query(Equipment)
+    
+    if owner_id:
+        query = query.filter(Equipment.owner_id == owner_id)
+    
+    total_items = query.count()
+    available_items = query.filter(Equipment.is_available == True).count()
     in_use_items = total_items - available_items
-    categories = db.query(Equipment.category).distinct().count()
+    categories = query.with_entities(Equipment.category).distinct().count()
     
     return {
         "total_items": total_items,

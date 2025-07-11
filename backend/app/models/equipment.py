@@ -20,6 +20,8 @@ class Equipment(Base):
     created_at = Column(DateTime(timezone=True), server_default=func.now())
     updated_at = Column(DateTime(timezone=True), onupdate=func.now())
     
-    # For future use - link to user who owns/manages this equipment
-    # owner_id = Column(Integer, ForeignKey("users.id"), nullable=True)
-    # owner = relationship("User", back_populates="equipment")
+    # Auth0 user ID (e.g., "auth0|123456789") - no foreign key needed
+    owner_id = Column(String, nullable=True, index=True)
+    
+    # Optional: store user display name for convenience (denormalized)
+    owner_name = Column(String, nullable=True)
