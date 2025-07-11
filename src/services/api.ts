@@ -2,6 +2,15 @@ console.log('🔍 Environment variable VITE_API_URL:', import.meta.env.VITE_API_
 const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:8000';
 console.log('🔍 Final API_BASE_URL:', API_BASE_URL);
 
+// Also show alert for debugging
+if (typeof window !== 'undefined') {
+  window.KITLOG_DEBUG = {
+    VITE_API_URL: import.meta.env.VITE_API_URL,
+    API_BASE_URL: API_BASE_URL,
+    allEnv: import.meta.env
+  };
+}
+
 export interface Equipment {
   id: number;
   name: string;

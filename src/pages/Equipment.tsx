@@ -5,6 +5,7 @@ import AccessControl from '@/components/auth/AccessControl';
 import { apiService, EquipmentCreate } from '@/services/api';
 import { Package, Plus, ArrowLeft, Check } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
+import DebugPanel from '@/components/DebugPanel';
 
 const EquipmentPage = () => {
   const { user, getAccessToken } = useAuth();
@@ -324,6 +325,7 @@ const EquipmentPage = () => {
           </div>
         </div>
       </div>
+      <DebugPanel />
       </AccessControl>
     </ProtectedRoute>
   );
