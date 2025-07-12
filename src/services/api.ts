@@ -134,7 +134,7 @@ class ApiService {
   }
 
   async getEquipmentStats(owner_id?: string): Promise<EquipmentStats> {
-    const endpoint = `/api/v1/equipment/stats/summary/${owner_id ? `?owner_id=${owner_id}` : ''}`;
+    const endpoint = `/api/v1/equipment/stats/summary${owner_id ? `?owner_id=${owner_id}` : ''}`;
     return this.makeRequest<EquipmentStats>(endpoint);
   }
 

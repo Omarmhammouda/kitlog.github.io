@@ -90,6 +90,20 @@ const Dashboard = () => {
               </p>
             </div>
 
+            {/* Error Display */}
+            {error && (
+              <div className="mb-6 p-4 bg-red-50 border border-red-200 rounded-2xl">
+                <p className="text-red-600 font-medium">Error loading statistics</p>
+                <p className="text-red-500 text-sm mt-1">{error}</p>
+                <button
+                  onClick={() => window.location.reload()}
+                  className="mt-3 px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors text-sm"
+                >
+                  Retry
+                </button>
+              </div>
+            )}
+
             {/* Stats Grid */}
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 animate-fade-in">
               {loading ? (
