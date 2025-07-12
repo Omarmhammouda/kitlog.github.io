@@ -11,9 +11,13 @@ export interface UserPermissions {
   isSuper: boolean;
 }
 
-// Your email address - replace with your actual email  
-const SUPERADMIN_EMAIL = 'imarey96@gmail.com'; // 👈 CHANGE THIS TO YOUR EMAIL
-// Example: const SUPERADMIN_EMAIL = 'john@example.com';
+// Your email addresses - add all superadmin emails here
+const SUPERADMIN_EMAILS = [
+  'imarey96@gmail.com',
+  // Add more superadmin emails as needed:
+  // 'admin2@example.com',
+  // 'admin3@example.com',
+]; // 👈 ADD MORE EMAILS TO THIS ARRAY
 
 export const useUserRole = () => {
   const { user, isAuthenticated } = useAuth();
@@ -43,8 +47,8 @@ export const useUserRole = () => {
 
     // Determine user role
     const determineRole = (): UserRole => {
-      // Check if user is superadmin (your email)
-      if (user.email === SUPERADMIN_EMAIL) {
+      // Check if user is superadmin (check against all superadmin emails)
+      if (user.email && SUPERADMIN_EMAILS.includes(user.email)) {
         return 'superadmin';
       }
 
