@@ -14,6 +14,7 @@ export interface UserPermissions {
 // Your email addresses - add all superadmin emails here
 const SUPERADMIN_EMAILS = [
   'imarey96@gmail.com',
+  'abaq123@gmail.com',
   // Add more superadmin emails as needed:
   // 'admin2@example.com',
   // 'admin3@example.com',
