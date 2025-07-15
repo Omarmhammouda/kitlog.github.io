@@ -10,44 +10,10 @@ import { useNavigate } from 'react-router-dom';
 const Dashboard = () => {
   const { user, getAccessToken } = useAuth();
   const navigate = useNavigate();
-  const [stats, setStats] = useState<EquipmentStats>({
-    total_items: 0,
-    available_items: 0,
-    in_use_items: 0,
-    categories: 0,
-  });
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
-
-  useEffect(() => {
-    const fetchStats = async () => {
-      try {
-        const userStats = await apiService.getEquipmentStats(user.id);
-        setStats(userStats);
-      } catch (err) {
-        console.error('Error fetching stats:', err);
-        setError('Failed to load equipment statistics');
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    if (user.id) {
-      fetchStats();
-    }
-  }, [user.id]);
-
   // Initialize API service with token getter
   useEffect(() => {
     apiService.setTokenGetter(getAccessToken);
   }, [getAccessToken]);
-
-  const statsDisplay = [
-    { label: 'Total Items', value: stats.total_items.toString(), icon: Package, color: 'bg-orange-50 text-orange-600' },
-    { label: 'Categories', value: stats.categories.toString(), icon: BarChart3, color: 'bg-blue-50 text-blue-600' },
-    { label: 'Available', value: stats.available_items.toString(), icon: Activity, color: 'bg-green-50 text-green-600' },
-    { label: 'In Use', value: stats.in_use_items.toString(), icon: User, color: 'bg-purple-50 text-purple-600' },
-  ];
 
   const quickActions = [
     { 
@@ -90,53 +56,27 @@ const Dashboard = () => {
               </p>
             </div>
 
-            {/* Error Display */}
-            {error && (
-              <div className="mb-6 p-4 bg-red-50 border border-red-200 rounded-2xl">
-                <p className="text-red-600 font-medium">Error loading statistics</p>
-                <p className="text-red-500 text-sm mt-1">{error}</p>
-                <button
-                  onClick={() => window.location.reload()}
-                  className="mt-3 px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors text-sm"
-                >
-                  Retry
-                </button>
-              </div>
-            )}
-
-            {/* Stats Grid */}
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 animate-fade-in">
-              {loading ? (
-                // Loading skeleton
-                Array.from({ length: 4 }).map((_, index) => (
-                  <div key={index} className="bg-white rounded-2xl p-6 shadow-apple">
-                    <div className="flex items-center justify-between">
-                      <div>
-                        <div className="h-4 bg-gray-200 rounded w-20 mb-2 animate-pulse"></div>
-                        <div className="h-8 bg-gray-200 rounded w-12 animate-pulse"></div>
+            {/* Quick Actions Grid */}
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6 animate-fade-in">
+              {quickActions.map((action, index) => {
+                const Icon = action.icon;
+                return (
+                  <button
+                    key={index}
+                    onClick={() => handleQuickAction(action)}
+                    className="bg-white rounded-2xl p-6 shadow-apple hover:shadow-apple-lg transition-all duration-200 text-left group hover:scale-105 transform"
+                  >
+                    <div className="flex items-center justify-between mb-4">
+                      <div className="w-12 h-12 bg-orange-50 rounded-2xl flex items-center justify-center group-hover:bg-orange-100 transition-colors">
+                        <Icon className="w-6 h-6 text-orange-600" />
                       </div>
-                      <div className="w-12 h-12 bg-gray-200 rounded-2xl animate-pulse"></div>
+                      <ArrowRight className="w-5 h-5 text-gray-400 group-hover:text-orange-600 transition-colors" />
                     </div>
-                  </div>
-                ))
-              ) : (
-                statsDisplay.map((stat, index) => {
-                  const Icon = stat.icon;
-                  return (
-                    <div key={index} className="bg-white rounded-2xl p-6 shadow-apple hover:shadow-apple-lg transition-all duration-200">
-                      <div className="flex items-center justify-between">
-                        <div>
-                          <p className="text-sm font-medium text-gray-600">{stat.label}</p>
-                          <p className="text-3xl font-light text-gray-900 mt-1">{stat.value}</p>
-                        </div>
-                        <div className={`w-12 h-12 rounded-2xl flex items-center justify-center ${stat.color}`}>
-                          <Icon className="w-6 h-6" />
-                        </div>
-                      </div>
-                    </div>
-                  );
-                })
-              )}
+                    <h3 className="text-lg font-medium text-gray-900 mb-2">{action.label}</h3>
+                    <p className="text-sm text-gray-600">{action.description}</p>
+                  </button>
+                );
+              })}
             </div>
           </div>
         </div>
@@ -144,32 +84,6 @@ const Dashboard = () => {
         {/* Main Content */}
         <div className="py-12 px-6 lg:px-8">
           <div className="max-w-7xl mx-auto">
-            {/* Quick Actions */}
-            <div className="mb-12">
-              <h2 className="text-2xl font-light text-gray-900 mb-6">Quick Actions</h2>
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                {quickActions.map((action, index) => {
-                  const Icon = action.icon;
-                  return (
-                    <button
-                      key={index}
-                      onClick={() => handleQuickAction(action)}
-                      className="bg-white rounded-2xl p-6 shadow-apple hover:shadow-apple-lg transition-all duration-200 text-left group hover:scale-105 transform"
-                    >
-                      <div className="flex items-center justify-between mb-4">
-                        <div className="w-12 h-12 bg-orange-50 rounded-2xl flex items-center justify-center group-hover:bg-orange-100 transition-colors">
-                          <Icon className="w-6 h-6 text-orange-600" />
-                        </div>
-                        <ArrowRight className="w-5 h-5 text-gray-400 group-hover:text-orange-600 transition-colors" />
-                      </div>
-                      <h3 className="text-lg font-medium text-gray-900 mb-2">{action.label}</h3>
-                      <p className="text-sm text-gray-600">{action.description}</p>
-                    </button>
-                  );
-                })}
-              </div>
-            </div>
-
             {/* Main Cards */}
             <div className="grid gap-8 md:grid-cols-2">
               {/* Profile Card */}
