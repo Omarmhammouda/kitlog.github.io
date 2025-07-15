@@ -15,7 +15,7 @@ FastAPI backend for the KitLog application.
 - **Testing**: Pytest setup for unit tests
 
 ## Project Structure
-
+test
 ```
 backend/
 ├── app/
