@@ -30,6 +30,11 @@ class Settings(BaseSettings):
     ALGORITHM: str = "HS256"
     ACCESS_TOKEN_EXPIRE_MINUTES: int = 30
     
+    # Auth0 Settings
+    AUTH0_DOMAIN: str = "dev-your-domain.us.auth0.com"  # Will be overridden by env var
+    AUTH0_CLIENT_ID: str = "your-client-id"  # Will be overridden by env var
+    AUTH0_CLIENT_SECRET: str = "your-client-secret"  # Will be overridden by env var
+    
     # Environment
     ENVIRONMENT: str = "development"
     DEBUG: bool = True

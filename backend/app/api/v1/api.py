@@ -1,6 +1,6 @@
 from fastapi import APIRouter
 
-from .endpoints import items, users, signups, equipment, admin, teams, team_memberships, team_invitations
+from .endpoints import items, users, signups, equipment, admin, teams, team_memberships, team_invitations, auth
 
 api_router = APIRouter()
 
@@ -12,6 +12,7 @@ api_router.include_router(admin.router, prefix="/admin", tags=["admin"])
 api_router.include_router(teams.router, prefix="/teams", tags=["teams"])
 api_router.include_router(team_memberships.router, tags=["team-memberships"])
 api_router.include_router(team_invitations.router, tags=["team-invitations"])
+api_router.include_router(auth.router, prefix="/auth", tags=["auth"])
 
 @api_router.get("/example")
 async def example():

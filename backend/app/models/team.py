@@ -22,17 +22,14 @@ class TeamMembership(Base):
     __tablename__ = "team_memberships"
 
     id = Column(Integer, primary_key=True, index=True)
-    user_id = Column(String, index=True, nullable=False)  # Auth0 user ID
+    user_id = Column(Integer, ForeignKey("users.id"), nullable=False)  # Reference to User table
     team_id = Column(Integer, ForeignKey("teams.id"), nullable=False)
     role = Column(String, default="member")  # owner, admin, member
     joined_at = Column(DateTime(timezone=True), server_default=func.now())
-    
-    # Optional: store user display name for convenience (denormalized)
-    user_name = Column(String, nullable=True)
-    user_email = Column(String, nullable=True)
 
     # Relationships
     team = relationship("Team", back_populates="members")
+    user = relationship("User", back_populates="team_memberships")
 
 class TeamInvitation(Base):
     __tablename__ = "team_invitations"
@@ -48,8 +45,8 @@ class TeamInvitation(Base):
     accepted_at = Column(DateTime(timezone=True), nullable=True)
     
     # Who sent the invitation
-    invited_by_user_id = Column(String, nullable=False)
-    invited_by_name = Column(String, nullable=True)
+    invited_by_user_id = Column(Integer, ForeignKey("users.id"), nullable=False)
 
     # Relationships
     team = relationship("Team", back_populates="invitations")
+    invited_by = relationship("User", foreign_keys=[invited_by_user_id])

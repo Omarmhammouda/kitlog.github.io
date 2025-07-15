@@ -9,6 +9,7 @@ from app.models.base import engine, Base
 from app.models.signup import EmailSignup  # Import to register the table
 from app.models.equipment import Equipment  # Import to register the table
 from app.models.team import Team, TeamMembership, TeamInvitation  # Import to register team tables
+from app.models.user import User  # Import to register user table
 
 # Load environment variables
 load_dotenv()
