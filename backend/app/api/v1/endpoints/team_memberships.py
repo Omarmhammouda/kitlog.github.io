@@ -125,7 +125,25 @@ async def remove_team_member(team_id: int, user_id: str, db: Session = Depends(g
 # Get teams for a specific user
 @router.get("/users/{user_id}/teams", response_model=List[TeamMembershipSchema])
 async def get_user_teams(user_id: str, db: Session = Depends(get_db)):
-    memberships = db.query(TeamMembership).filter(
+    memberships = db.query(TeamMembership).join(Team).filter(
         TeamMembership.user_id == user_id
     ).all()
-    return memberships
+    
+    # Populate team name and description for each membership
+    result = []
+    for membership in memberships:
+        team = membership.team
+        membership_dict = {
+            "id": membership.id,
+            "user_id": membership.user_id,
+            "team_id": membership.team_id,
+            "role": membership.role,
+            "user_name": membership.user_name,
+            "user_email": membership.user_email,
+            "joined_at": membership.joined_at,
+            "team_name": team.name if team else None,
+            "team_description": team.description if team else None
+        }
+        result.append(membership_dict)
+    
+    return result

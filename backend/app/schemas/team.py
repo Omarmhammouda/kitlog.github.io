@@ -43,7 +43,7 @@ class TeamMembershipBase(BaseModel):
     user_email: Optional[str] = None
 
 class TeamMembershipCreate(TeamMembershipBase):
-    team_id: int
+    pass
 
 class TeamMembershipUpdate(BaseModel):
     role: Optional[TeamRole] = None
@@ -52,6 +52,8 @@ class TeamMembership(TeamMembershipBase):
     id: int
     team_id: int
     joined_at: datetime
+    team_name: Optional[str] = None
+    team_description: Optional[str] = None
     
     class Config:
         from_attributes = True
