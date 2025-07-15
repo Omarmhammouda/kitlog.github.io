@@ -6,7 +6,6 @@ from app.services.auth_service import AuthService
 from app.models.base import get_db
 from app.core.config import settings
 import requests
-import jwt
 
 router = APIRouter()
 security = HTTPBearer()
