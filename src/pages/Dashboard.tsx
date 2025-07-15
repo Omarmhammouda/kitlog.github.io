@@ -1,16 +1,24 @@
 import { useAuth } from '@/hooks/useAuth';
 import ProtectedRoute from '@/components/auth/ProtectedRoute';
+import CreateTeamModal from '@/components/teams/CreateTeamModal';
 import AccessControl from '@/components/auth/AccessControl';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Package, BarChart3, Activity, User, ArrowRight, Plus } from 'lucide-react';
 import { useEffect, useState } from 'react';
-import { apiService, EquipmentStats } from '@/services/api';
+import { apiService, EquipmentStats, TeamCreate } from '@/services/api';
 import { useNavigate } from 'react-router-dom';
+import useUserTeams from '@/hooks/useUserTeams';
 
 const Dashboard = () => {
   const { user, getAccessToken } = useAuth();
   const navigate = useNavigate();
-  // Initialize API service with token getter
+  const { createTeam, loading } = useUserTeams(); // Access createTeam and loading states
+
+  const [isModalOpen, setModalOpen] = useState(false);
+
+  const handleCreateTeam = async (teamData: TeamCreate) =e {
+    await createTeam(teamData);
+  };
   useEffect(() => {
     apiService.setTokenGetter(getAccessToken);
   }, [getAccessToken]);
@@ -42,6 +50,13 @@ const Dashboard = () => {
 
   return (
     <ProtectedRoute>
+      <CreateTeamModal
+        isOpen={isModalOpen}
+        onClose={() =e setModalOpen(false)}
+        onCreateTeam={handleCreateTeam}
+        isLoading={loading}
+      />
+
       <AccessControl requireDashboard={true}>
       <div className="min-h-screen bg-white">
         {/* Header */}
@@ -51,9 +66,15 @@ const Dashboard = () => {
               <h1 className="text-4xl md:text-5xl font-light text-gray-900 mb-4 animate-fade-in">
                 Welcome back, <span className="text-orange font-normal">{user.name}</span>
               </h1>
-              <p className="text-xl text-gray-600 animate-fade-in">
+              <p className="text-xl text-gray-600 animate-fade-in mb-4">
                 Ready to manage your creative equipment?
               </p>
+              <button
+                className="text-orange-600 hover:underline text-lg font-medium"
+                onClick={() => setModalOpen(true)}
+              >
+                Want to collaborate? Create a Team →
+              </button>
             </div>
 
             {/* Quick Actions Grid */}

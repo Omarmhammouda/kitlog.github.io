@@ -1,16 +1,16 @@
 import { ReactNode } from 'react';
 import { useAuth } from '@/hooks/useAuth';
-import useFirstTimeUserCheck from '@/hooks/useFirstTimeUserCheck';
+import useUserTeams from '@/hooks/useUserTeams';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Loader2, Users, CheckCircle } from 'lucide-react';
 
-interface FirstTimeUserWrapperProps {
+interface TeamRequiredWrapperProps {
   children: ReactNode;
 }
 
-const FirstTimeUserWrapper = ({ children }: FirstTimeUserWrapperProps) => {
+const TeamRequiredWrapper = ({ children }: TeamRequiredWrapperProps) => {
   const { isAuthenticated, user } = useAuth();
-  const { hasTeam, loading, error, defaultTeam } = useFirstTimeUserCheck();
+  const { hasTeam, loading, error, defaultTeam } = useUserTeams();
 
   // Don't show anything if user is not authenticated
   if (!isAuthenticated) {
@@ -111,4 +111,4 @@ const FirstTimeUserWrapper = ({ children }: FirstTimeUserWrapperProps) => {
   return <>{children}</>;
 };
 
-export default FirstTimeUserWrapper;
+export default TeamRequiredWrapper;
