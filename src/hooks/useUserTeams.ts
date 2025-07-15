@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { useAuth } from '@/hooks/useAuth';
 import { apiService, TeamCreate, TeamMembership } from '@/services/api';
 
@@ -27,8 +27,10 @@ const useUserTeams = () => {
       };
       
       checkUserTeams();
+    } else if (!isAuthenticated) {
+      setLoading(false);
     }
-  }, [user, isAuthenticated, getAccessToken]);
+  }, [user.id, isAuthenticated, getAccessToken]);
 
   const hasTeam = userTeams.length > 0;
   const defaultTeam = userTeams.find(team => team.role === 'owner') || userTeams[0];

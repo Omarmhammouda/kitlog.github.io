@@ -1,4 +1,5 @@
 import { useAuth0 } from '@auth0/auth0-react';
+import { useCallback, useMemo } from 'react';
 
 export const useAuth = () => {
   const {
@@ -24,7 +25,7 @@ export const useAuth = () => {
     });
   };
 
-  const getAccessToken = async () => {
+  const getAccessToken = useCallback(async () => {
     try {
       const token = await getAccessTokenSilently();
       return token;
@@ -32,20 +33,18 @@ export const useAuth = () => {
       console.error('Error getting access token:', error);
       throw error;
     }
-  };
+  }, [getAccessTokenSilently]);
 
-  const getUserInfo = () => {
-    return {
-      id: user?.sub,
-      email: user?.email,
-      name: user?.name,
-      picture: user?.picture,
-      emailVerified: user?.email_verified,
-    };
-  };
+  const userInfo = useMemo(() => ({
+    id: user?.sub,
+    email: user?.email,
+    name: user?.name,
+    picture: user?.picture,
+    emailVerified: user?.email_verified,
+  }), [user?.sub, user?.email, user?.name, user?.picture, user?.email_verified]);
 
   return {
-    user: getUserInfo(),
+    user: userInfo,
     isAuthenticated,
     isLoading,
     error,
