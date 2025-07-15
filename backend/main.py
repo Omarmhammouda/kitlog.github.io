@@ -8,6 +8,7 @@ from app.core.config import settings
 from app.models.base import engine, Base
 from app.models.signup import EmailSignup  # Import to register the table
 from app.models.equipment import Equipment  # Import to register the table
+from app.models.team import Team, TeamMembership, TeamInvitation  # Import to register team tables
 
 # Load environment variables
 load_dotenv()
@@ -31,7 +32,9 @@ app.add_middleware(
 # Create database tables on startup
 @app.on_event("startup")
 def create_tables():
+    print("🚀 Creating database tables...")
     Base.metadata.create_all(bind=engine)
+    print("✅ Database tables created successfully!")
 
 # Include API routes
 app.include_router(api_router, prefix=settings.API_V1_STR)
