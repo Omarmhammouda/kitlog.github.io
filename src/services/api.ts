@@ -115,7 +115,20 @@ class ApiService {
     });
 
     if (!response.ok) {
-      throw new Error(`API request failed: ${response.statusText}`);
+      let errorMessage = `API request failed: ${response.status} ${response.statusText}`;
+      try {
+        const errorData = await response.json();
+        if (errorData.detail) {
+          errorMessage += ` - ${errorData.detail}`;
+        } else if (errorData.message) {
+          errorMessage += ` - ${errorData.message}`;
+        } else {
+          errorMessage += ` - ${JSON.stringify(errorData)}`;
+        }
+      } catch (e) {
+        // If response is not JSON, just use the status text
+      }
+      throw new Error(errorMessage);
     }
 
     return response.json();

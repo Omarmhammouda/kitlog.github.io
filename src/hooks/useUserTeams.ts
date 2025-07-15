@@ -38,16 +38,23 @@ const useUserTeams = () => {
       setLoading(true);
       setError(null);
       
+      console.log('Creating team with data:', teamData);
+      
       // Create the team
       const createdTeam = await apiService.createTeam(teamData);
+      console.log('Team created:', createdTeam);
       
       // Add user as owner of the team
-      await apiService.addTeamMember(createdTeam.id, {
+      const memberData = {
         user_id: user.id,
-        role: 'owner',
+        role: 'owner' as const,
         user_name: user.name,
         user_email: user.email,
-      });
+      };
+      console.log('Adding team member with data:', memberData);
+      
+      await apiService.addTeamMember(createdTeam.id, memberData);
+      console.log('Team member added successfully');
       
       // Fetch updated teams
       const updatedTeams = await apiService.getUserTeams(user.id);
