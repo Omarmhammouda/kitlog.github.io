@@ -13,15 +13,16 @@ class Equipment(Base):
     brand = Column(String, nullable=True)
     model = Column(String, nullable=True)
     serial_number = Column(String, unique=True, nullable=True, index=True)
-    condition = Column(String, default="good")  # good, fair, poor, needs_repair
-    is_available = Column(Boolean, default=True)
+    status = Column(String, default="available")  # available, needs_repair
     location = Column(String, nullable=True)
     notes = Column(Text, nullable=True)
     created_at = Column(DateTime(timezone=True), server_default=func.now())
     updated_at = Column(DateTime(timezone=True), onupdate=func.now())
     
-    # User who owns this equipment
+    # User or Team ownership
     owner_id = Column(Integer, ForeignKey("users.id"), nullable=True, index=True)
+    team_id = Column(Integer, ForeignKey("teams.id"), nullable=True, index=True)
     
     # Relationships
     owner = relationship("User", foreign_keys=[owner_id])
+    team = relationship("Team", foreign_keys=[team_id])

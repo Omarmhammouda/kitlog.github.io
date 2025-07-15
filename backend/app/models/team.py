@@ -17,6 +17,7 @@ class Team(Base):
     # Relationships
     members = relationship("TeamMembership", back_populates="team", cascade="all, delete-orphan")
     invitations = relationship("TeamInvitation", back_populates="team", cascade="all, delete-orphan")
+    equipment = relationship("Equipment", foreign_keys="Equipment.team_id", back_populates="team")
 
 class TeamMembership(Base):
     __tablename__ = "team_memberships"
