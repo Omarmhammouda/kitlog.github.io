@@ -16,7 +16,7 @@ const Dashboard = () => {
 
   const [isModalOpen, setModalOpen] = useState(false);
 
-  const handleCreateTeam = async (teamData: TeamCreate) =e {
+  const handleCreateTeam = async (teamData: TeamCreate) => {
     await createTeam(teamData);
   };
   useEffect(() => {
@@ -52,7 +52,7 @@ const Dashboard = () => {
     <ProtectedRoute>
       <CreateTeamModal
         isOpen={isModalOpen}
-        onClose={() =e setModalOpen(false)}
+        onClose={() => setModalOpen(false)}
         onCreateTeam={handleCreateTeam}
         isLoading={loading}
       />

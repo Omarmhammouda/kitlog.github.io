@@ -40,6 +40,40 @@ export interface EquipmentStats {
   categories: number;
 }
 
+export interface TeamCreate {
+  name: string;
+  description?: string;
+  subscription_type: 'free' | 'paid' | 'enterprise';
+}
+
+export interface Team {
+  id: number;
+  name: string;
+  description?: string;
+  subscription_type: 'free' | 'paid' | 'enterprise';
+  created_at: string;
+  updated_at?: string;
+}
+
+export interface TeamMembership {
+  id: number;
+  team_id: number;
+  user_id: string;
+  role: 'owner' | 'admin' | 'member';
+  user_name?: string;
+  user_email?: string;
+  team_name?: string;
+  team_description?: string;
+  created_at: string;
+}
+
+export interface TeamMemberCreate {
+  user_id: string;
+  role: 'owner' | 'admin' | 'member';
+  user_name?: string;
+  user_email?: string;
+}
+
 class ApiService {
   private getAccessToken: (() => Promise<string>) | null = null;
 
@@ -140,6 +174,46 @@ class ApiService {
 
   async getEquipmentCategories(): Promise<{ categories: string[] }> {
     return this.makeRequest<{ categories: string[] }>('/api/v1/equipment/categories/list/');
+  }
+
+  // Team endpoints
+  async createTeam(team: TeamCreate): Promise<Team> {
+    return this.makeRequest<Team>('/api/v1/teams/', {
+      method: 'POST',
+      body: JSON.stringify(team),
+    });
+  }
+
+  async getUserTeams(userId: string): Promise<TeamMembership[]> {
+    return this.makeRequest<TeamMembership[]>(`/api/v1/users/${userId}/teams`);
+  }
+
+  async getTeamById(teamId: number): Promise<Team> {
+    return this.makeRequest<Team>(`/api/v1/teams/${teamId}`);
+  }
+
+  async addTeamMember(teamId: number, member: TeamMemberCreate): Promise<TeamMembership> {
+    return this.makeRequest<TeamMembership>(`/api/v1/teams/${teamId}/members`, {
+      method: 'POST',
+      body: JSON.stringify(member),
+    });
+  }
+
+  async getTeamMembers(teamId: number): Promise<TeamMembership[]> {
+    return this.makeRequest<TeamMembership[]>(`/api/v1/teams/${teamId}/members`);
+  }
+
+  async updateTeamMember(teamId: number, memberId: number, updates: Partial<TeamMemberCreate>): Promise<TeamMembership> {
+    return this.makeRequest<TeamMembership>(`/api/v1/teams/${teamId}/members/${memberId}`, {
+      method: 'PUT',
+      body: JSON.stringify(updates),
+    });
+  }
+
+  async removeTeamMember(teamId: number, memberId: number): Promise<{ message: string }> {
+    return this.makeRequest<{ message: string }>(`/api/v1/teams/${teamId}/members/${memberId}`, {
+      method: 'DELETE',
+    });
   }
 }
 
