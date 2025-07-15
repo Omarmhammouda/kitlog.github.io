@@ -13,41 +13,62 @@ from app.models.base import Base
 from app.models.team import Team, TeamMembership, TeamInvitation
 from app.models.equipment import Equipment
 from app.models.signup import EmailSignup
+from app.models.user import User
 
 def run_migrations():
-    """Run database migrations."""
+    """Run database migrations step by step."""
     print("🚀 Starting database migrations...")
     
     try:
         # Create engine
         engine = create_engine(settings.DATABASE_URL)
         
-        # Create all tables (this is safe - SQLAlchemy won't recreate existing tables)
+        # Step 1: Create User table first (no foreign keys)
+        print("📝 Step 1: Creating User table...")
+        from app.models.user import User
+        User.__table__.create(engine, checkfirst=True)
+        print("✅ User table created")
+        
+        # Step 2: Create other tables
+        print("📝 Step 2: Creating other tables...")
         Base.metadata.create_all(engine)
+        print("✅ All tables created")
         
-        print("✅ Database tables created/updated successfully!")
-        
-        # Verify team tables exist
+        # Step 3: Add foreign key constraints if needed
+        print("📝 Step 3: Adding foreign key constraints...")
         with engine.connect() as conn:
             try:
-                result = conn.execute(text("SELECT name FROM sqlite_master WHERE type='table' AND name LIKE '%team%'"))
-                team_tables = result.fetchall()
-                
-                if team_tables:
-                    print(f"✅ Found {len(team_tables)} team tables:")
-                    for table in team_tables:
-                        print(f"  - {table[0]}")
+                # Check if we're using SQLite or PostgreSQL
+                if "sqlite" in settings.DATABASE_URL.lower():
+                    # SQLite: Check if foreign keys are enabled
+                    result = conn.execute(text("PRAGMA foreign_keys"))
+                    fk_status = result.fetchone()
+                    if fk_status and fk_status[0] == 0:
+                        conn.execute(text("PRAGMA foreign_keys = ON"))
+                        print("✅ Foreign keys enabled for SQLite")
                 else:
-                    print("⚠️  No team tables found - this might be expected on first run")
+                    # PostgreSQL: Foreign keys are handled automatically
+                    print("✅ Foreign keys handled by PostgreSQL")
                     
+                # Verify tables exist
+                if "sqlite" in settings.DATABASE_URL.lower():
+                    result = conn.execute(text("SELECT name FROM sqlite_master WHERE type='table'"))
+                    tables = [row[0] for row in result.fetchall()]
+                else:
+                    result = conn.execute(text("SELECT table_name FROM information_schema.tables WHERE table_schema='public'"))
+                    tables = [row[0] for row in result.fetchall()]
+                
+                print(f"✅ Found {len(tables)} tables: {', '.join(tables)}")
+                
             except Exception as e:
-                # This might fail on PostgreSQL, that's okay
-                print(f"ℹ️  Could not verify tables (this is normal for PostgreSQL): {e}")
+                print(f"⚠️  Could not verify constraints (this might be normal): {e}")
         
         return True
         
     except Exception as e:
         print(f"❌ Migration failed: {e}")
+        import traceback
+        traceback.print_exc()
         return False
 
 def main():

@@ -30,12 +30,15 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-# Create database tables on startup
+# Run migrations on startup
 @app.on_event("startup")
-def create_tables():
-    print("🚀 Creating database tables...")
-    Base.metadata.create_all(bind=engine)
-    print("✅ Database tables created successfully!")
+def run_startup_migrations():
+    from startup import run_migrations
+    print("🚀 Running startup migrations...")
+    if not run_migrations():
+        print("❌ Migration failed during startup")
+        raise Exception("Database migration failed")
+    print("✅ Startup migrations completed successfully!")
 
 # Include API routes
 app.include_router(api_router, prefix=settings.API_V1_STR)
