@@ -33,8 +33,8 @@ class User(Base):
     auth0_metadata = Column(Text, nullable=True)
     
     # Relationships
-    # Removed team_memberships relationship due to lack of foreign key reference
     equipment = relationship("Equipment", foreign_keys="Equipment.owner_id", back_populates="owner")
+    team_memberships = relationship("TeamMembership", back_populates="user")
     
     def __repr__(self):
         return f"<User {self.email}>"

@@ -37,10 +37,8 @@ class Team(TeamBase):
 
 # Team membership schemas
 class TeamMembershipBase(BaseModel):
-    user_id: str
+    user_id: int  # Foreign key to users.id
     role: TeamRole = TeamRole.MEMBER
-    user_name: Optional[str] = None
-    user_email: Optional[str] = None
 
 class TeamMembershipCreate(TeamMembershipBase):
     pass
