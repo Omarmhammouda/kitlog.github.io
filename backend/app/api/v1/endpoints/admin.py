@@ -77,3 +77,41 @@ async def migrate_owner_columns(db: Session = Depends(get_db)):
 async def health_check():
     """Simple health check endpoint"""
     return {"status": "healthy", "message": "Admin endpoints are working"}
+
+@router.get("/equipment-schema")
+async def check_equipment_schema(db: Session = Depends(get_db)):
+    """Debug endpoint to check equipment table schema"""
+    try:
+        # Check what columns exist in the equipment table
+        result = db.execute(text("""
+            SELECT column_name, data_type, is_nullable
+            FROM information_schema.columns 
+            WHERE table_name = 'equipment'
+            ORDER BY ordinal_position
+        """))
+        
+        columns = [{
+            "name": row[0],
+            "type": row[1], 
+            "nullable": row[2]
+        } for row in result.fetchall()]
+        
+        # Also check current Alembic revision
+        try:
+            revision_result = db.execute(text("SELECT version_num FROM alembic_version"))
+            current_revision = revision_result.fetchone()
+            current_revision = current_revision[0] if current_revision else "None"
+        except:
+            current_revision = "No alembic_version table"
+        
+        return {
+            "current_revision": current_revision,
+            "equipment_columns": columns,
+            "total_columns": len(columns)
+        }
+        
+    except Exception as e:
+        raise HTTPException(
+            status_code=500,
+            detail=f"Error checking schema: {str(e)}"
+        )
