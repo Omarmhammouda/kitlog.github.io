@@ -16,19 +16,32 @@ def create_equipment(
 ):
     """Create a new equipment item"""
     try:
+        print(f"Creating equipment with data: {equipment.dict()}")
         db_equipment = Equipment(**equipment.dict())
+        print(f"Created Equipment object: {db_equipment.__dict__}")
         db.add(db_equipment)
+        print("Added to session, committing...")
         db.commit()
+        print("Committed successfully, refreshing...")
         db.refresh(db_equipment)
+        print(f"Equipment created successfully with ID: {db_equipment.id}")
         return db_equipment
     except IntegrityError as e:
+        print(f"IntegrityError occurred: {str(e)}")
         db.rollback()
         if "serial_number" in str(e):
             raise HTTPException(
                 status_code=400, 
                 detail="Serial number already exists"
             )
-        raise HTTPException(status_code=400, detail="Database error")
+        raise HTTPException(status_code=400, detail=f"Database integrity error: {str(e)}")
+    except Exception as e:
+        print(f"Unexpected error occurred: {str(e)}")
+        print(f"Error type: {type(e)}")
+        import traceback
+        traceback.print_exc()
+        db.rollback()
+        raise HTTPException(status_code=500, detail=f"Internal server error: {str(e)}")
 
 @router.get("/", response_model=List[EquipmentResponse])
 def get_equipment(
