@@ -3,29 +3,26 @@ from fastapi.security import HTTPBearer
 from sqlalchemy.orm import Session
 from typing import List
 
-from app.models.team import Team, TeamMembership, TeamInvitation
+from app.models.team import Team
 from app.models.user import User
 from app.schemas.team import (
-    Team as TeamSchema, TeamCreate, TeamUpdate, TeamWithMembers,
-    TeamMembership as TeamMembershipSchema, TeamMembershipCreate, 
-    TeamInvitation as TeamInvitationSchema,
+    Team as TeamSchema, TeamCreate, TeamUpdate, TeamWithMembers
 )
 from app.models.base import get_db
 from app.services.auth_service import AuthService
+from app.services.team_service import TeamService
 from app.core.config import settings
 import requests
 
 router = APIRouter()
 security = HTTPBearer()
 
-# Create a new team
-@router.post("/", response_model=TeamSchema)
-async def create_team(
-    team: TeamCreate, 
-    token: str = Depends(security),
-    db: Session = Depends(get_db)
-):
-    # Get current user from token
+
+async def get_current_user(token: str = Depends(security), db: Session = Depends(get_db)) -> User:
+    """
+    Dependency to get current user from token.
+    This could be moved to a separate dependencies file.
+    """
     try:
         auth0_user_info_url = f"https://{settings.AUTH0_DOMAIN}/userinfo"
         user_info_response = requests.get(
@@ -45,61 +42,90 @@ async def create_team(
             # Sync user if not exists
             current_user = AuthService.sync_user_from_auth0(user_info, db)
         
-        # Create the team
-        db_team = Team(**team.dict())
-        db.add(db_team)
-        db.commit()
-        db.refresh(db_team)
+        return current_user
         
-        # Add creator as team owner
-        team_membership = TeamMembership(
-            user_id=current_user.id,
-            team_id=db_team.id,
-            role="owner"
-        )
-        db.add(team_membership)
-        db.commit()
-        
-        return db_team
-        
-    except requests.exceptions.RequestException as e:
+    except requests.exceptions.RequestException:
         raise HTTPException(status_code=500, detail="Failed to connect to Auth0")
+    except Exception:
+        raise HTTPException(status_code=500, detail="Authentication failed")
+
+
+# Create a new team
+@router.post("/", response_model=TeamSchema)
+async def create_team(
+    team: TeamCreate, 
+    current_user: User = Depends(get_current_user),
+    db: Session = Depends(get_db)
+):
+    """Create a new team. The creator becomes the team owner."""
+    try:
+        return TeamService.create_team(team, current_user, db)
     except Exception as e:
-        db.rollback()
-        raise HTTPException(status_code=500, detail="Internal server error")
+        raise HTTPException(status_code=500, detail="Failed to create team")
+
 
 # Get all teams
 @router.get("/", response_model=List[TeamWithMembers])
 async def get_teams(db: Session = Depends(get_db)):
-    return db.query(Team).all()
+    """Get all active teams."""
+    return TeamService.get_all_teams(db)
+
 
 # Get a specific team by ID
 @router.get("/{team_id}", response_model=TeamWithMembers)
 async def get_team(team_id: int, db: Session = Depends(get_db)):
-    team = db.query(Team).filter(Team.id == team_id).first()
+    """Get a specific team by ID."""
+    team = TeamService.get_team_by_id(team_id, db)
     if not team:
         raise HTTPException(status_code=404, detail="Team not found")
     return team
+
 
 # Update a team
 @router.put("/{team_id}", response_model=TeamSchema)
-async def update_team(team_id: int, team_update: TeamUpdate, db: Session = Depends(get_db)):
-    team = db.query(Team).filter(Team.id == team_id).first()
+async def update_team(
+    team_id: int, 
+    team_update: TeamUpdate, 
+    current_user: User = Depends(get_current_user),
+    db: Session = Depends(get_db)
+):
+    """Update a team. Only team owners and admins can update."""
+    # Check permission
+    if not TeamService.check_user_team_permission(
+        current_user.id, team_id, ["owner", "admin"], db
+    ):
+        raise HTTPException(status_code=403, detail="Insufficient permissions")
+    
+    team = TeamService.update_team(team_id, team_update, db)
     if not team:
         raise HTTPException(status_code=404, detail="Team not found")
-    for key, value in team_update.dict(exclude_unset=True).items():
-        setattr(team, key, value)
-    db.commit()
-    db.refresh(team)
     return team
+
 
 # Delete a team
 @router.delete("/{team_id}")
-async def delete_team(team_id: int, db: Session = Depends(get_db)):
-    team = db.query(Team).filter(Team.id == team_id).first()
-    if not team:
-        raise HTTPException(status_code=404, detail="Team not found")
-    db.delete(team)
-    db.commit()
+async def delete_team(
+    team_id: int, 
+    current_user: User = Depends(get_current_user),
+    db: Session = Depends(get_db)
+):
+    """Delete a team. Only team owners can delete."""
+    success = TeamService.delete_team(team_id, current_user, db)
+    if not success:
+        raise HTTPException(status_code=404, detail="Team not found or insufficient permissions")
     return {"message": "Team deleted successfully"}
 
+
+# Get user's teams
+@router.get("/users/{user_id}/teams", response_model=List[TeamSchema])
+async def get_user_teams(
+    user_id: int,
+    current_user: User = Depends(get_current_user),
+    db: Session = Depends(get_db)
+):
+    """Get all teams a user is a member of."""
+    # Users can only see their own teams unless they're admin
+    if current_user.id != user_id and not current_user.is_admin:
+        raise HTTPException(status_code=403, detail="Insufficient permissions")
+    
+    return TeamService.get_user_teams(user_id, db)
